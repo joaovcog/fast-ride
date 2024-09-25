@@ -1,16 +1,13 @@
 package com.fastride.domain;
 
-public class ValidateCpf {
+public class CpfValidator {
 
-	public static boolean validateCpf(String rawCpf) {
+	public static boolean isValid(String rawCpf) {
 		if (rawCpf == null || rawCpf.isEmpty()) {
 			return false;
 		}
 		String cpf = removeNonDigits(rawCpf);
-		if (isInvalidLength(cpf)) {
-			return false;
-		}
-		if (hasAllDigitsEqual(cpf)) {
+		if (isInvalidLength(cpf) || hasAllDigitsEqual(cpf)) {
 			return false;
 		}
 		int digit1 = calculateDigit(cpf, 10);
@@ -45,13 +42,6 @@ public class ValidateCpf {
 
 	private static String extractDigit(String cpf) {
 		return cpf.substring(9);
-	}
-
-	public static void main(String[] args) {
-		// Test the validateCpf function
-		String rawCpf = "123.456.789-09";
-		boolean isValid = validateCpf(rawCpf);
-		System.out.println("Is CPF valid? " + isValid);
 	}
 
 }
