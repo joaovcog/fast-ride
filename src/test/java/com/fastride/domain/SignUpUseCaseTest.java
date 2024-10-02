@@ -29,16 +29,16 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @SpringBootTest
-@ContextConfiguration(initializers = { SignupUseCaseTest.Initializer.class })
+@ContextConfiguration(initializers = { SignUpUseCaseTest.Initializer.class })
 @Transactional
-class SignupUseCaseTest {
+class SignUpUseCaseTest {
 
 	@Container
 	public static PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>("postgres:latest")
 			.withDatabaseName("fast_ride_integration_tests_db").withUsername("").withPassword("");
 
 	@Autowired
-	private SignupUseCase signupUseCase;
+	private SignUpUseCase signUpUseCase;
 
 	@AfterEach
 	public void tearDown() throws SQLException {
@@ -52,9 +52,9 @@ class SignupUseCaseTest {
 	}
 
 	@Test
-	void shouldSignUpSuccessfully() {
+	void shouldSignUpPassengerSuccessfully() {
 		Object input = new Object[] { "John Doe", true, "john22@example.com", "32421438098", null, true, false };
-		Object objectWithAccountId = signupUseCase.signup(input);
+		Object objectWithAccountId = signUpUseCase.signUp(input);
 		Object[] arrayFromObject = (Object[]) objectWithAccountId;
 		Pattern UUID_REGEX = Pattern
 				.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
@@ -68,7 +68,7 @@ class SignupUseCaseTest {
 	@Test
 	void shouldSignUpDriverSuccessfully() {
 		Object input = new Object[] { "John Doe", true, "joh23n@example.com", "32421438098", "ABC1234", false, true };
-		Object objectWithAccountId = signupUseCase.signup(input);
+		Object objectWithAccountId = signUpUseCase.signUp(input);
 		Object[] arrayFromObject = (Object[]) objectWithAccountId;
 		Pattern UUID_REGEX = Pattern
 				.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
@@ -82,18 +82,18 @@ class SignupUseCaseTest {
 	@Test
 	void shouldNotSignUpWhenAccountAlreadyExists() {
 		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", null, true, false };
-		Object signupResult = signupUseCase.signup(input);
-		signupResult = signupUseCase.signup(input);
+		Object signUpResult = signUpUseCase.signUp(input);
+		signUpResult = signUpUseCase.signUp(input);
 
-		assertEquals(-4, signupResult);
+		assertEquals(-4, signUpResult);
 	}
 
 	@Test
 	void shouldNotSignUpWhenEmailIsInvalid() {
 		Object input = new Object[] { "John Doe", true, "john@", "12345678901", null, true, false };
-		Object signupResult = signupUseCase.signup(input);
+		Object signUpResult = signUpUseCase.signUp(input);
 
-		assertEquals(-2, signupResult);
+		assertEquals(-2, signUpResult);
 	}
 
 	@ParameterizedTest
@@ -101,17 +101,17 @@ class SignupUseCaseTest {
 	@ValueSource(strings = { "12345678910", "11111111111", "22222222222", "234bc" })
 	void shouldNotSignUpWhenCpfIsInvalid(String cpf) {
 		Object input = new Object[] { "John Doe", true, "john@example.com", cpf, null, true, false };
-		Object signupResult = signupUseCase.signup(input);
+		Object signUpResult = signUpUseCase.signUp(input);
 
-		assertEquals(-1, signupResult);
+		assertEquals(-1, signUpResult);
 	}
 
 	@Test
 	void shouldNotSignUpWhenNameIsInvalid() {
 		Object input = new Object[] { "", true, "john@example.com", "12345678901", null, true, false };
-		Object signupResult = signupUseCase.signup(input);
+		Object signUpResult = signUpUseCase.signUp(input);
 
-		assertEquals(-3, signupResult);
+		assertEquals(-3, signUpResult);
 	}
 
 	@ParameterizedTest
@@ -119,9 +119,9 @@ class SignupUseCaseTest {
 	@ValueSource(strings = { "AA", "ABC-234", "AB-1234", "7896-ABC", "5462", "ABC" })
 	void shouldNotSignUpDriverWhenCarPlateIsInvalid(String carPlate) {
 		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", carPlate, false, true };
-		Object signupResult = signupUseCase.signup(input);
+		Object signUpResult = signUpUseCase.signUp(input);
 
-		assertEquals(-5, signupResult);
+		assertEquals(-5, signUpResult);
 	}
 
 	static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

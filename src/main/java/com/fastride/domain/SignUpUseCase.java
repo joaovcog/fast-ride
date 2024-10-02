@@ -13,9 +13,9 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SignupUseCase {
+public class SignUpUseCase {
 
-	public Object signup(Object input) {
+	public Object signUp(Object input) {
 		String url = "jdbc:postgresql://localhost:5432/fast_ride_db";
 		String user = "postgres";
 		String password = "root";
