@@ -3,15 +3,10 @@ package com.fastride.domain;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -39,17 +34,6 @@ class SignUpUseCaseTest {
 
 	@Autowired
 	private SignUpUseCase signUpUseCase;
-
-	@AfterEach
-	public void tearDown() throws SQLException {
-		String url = "jdbc:postgresql://localhost:5432/fast_ride_db";
-		String user = "";
-		String password = "";
-		try (Connection connection = DriverManager.getConnection(url, user, password);
-				Statement statement = connection.createStatement();) {
-			statement.executeUpdate("delete from fast_ride.account");
-		}
-	}
 
 	@Test
 	void shouldSignUpPassengerSuccessfully() {
