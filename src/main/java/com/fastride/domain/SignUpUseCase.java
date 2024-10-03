@@ -19,7 +19,6 @@ public class SignUpUseCase {
 	}
 
 	public Object signUp(Object input) {
-		UUID id = UUID.randomUUID();
 		String selectQuery = "SELECT * FROM fast_ride.account WHERE email = ?";
 		List<Object> existantAccountIds = jdbcTemplate.query(selectQuery,
 				(resultSet, rowNumber) -> new String(resultSet.getString("account_id")),
@@ -47,6 +46,7 @@ public class SignUpUseCase {
 		}
 
 		String insertQuery = "INSERT INTO fast_ride.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		UUID id = UUID.randomUUID();
 		jdbcTemplate.update(insertQuery, id, (String) ((Object[]) input)[0], (String) ((Object[]) input)[2],
 				(String) ((Object[]) input)[3], (String) ((Object[]) input)[4], (boolean) ((Object[]) input)[5],
 				(boolean) ((Object[]) input)[6]);
