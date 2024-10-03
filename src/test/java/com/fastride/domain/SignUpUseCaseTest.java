@@ -80,9 +80,12 @@ class SignUpUseCaseTest {
 	@Test
 	void shouldNotSignUpWhenEmailIsInvalid() {
 		Object input = new Object[] { "John Doe", true, "john@", "12345678901", null, true, false };
-		Object signUpResult = signUpUseCase.signUp(input);
 
-		assertEquals(-2, signUpResult);
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			signUpUseCase.signUp(input);
+		});
+
+		assertEquals("Invalid e-mail! Please, type a valid e-mail for signing up.", exception.getMessage());
 	}
 
 	@ParameterizedTest

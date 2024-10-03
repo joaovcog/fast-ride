@@ -35,7 +35,7 @@ public class SignUpUseCase {
 		Pattern emailPattern = Pattern.compile("^(.+)@(.+)$");
 		Matcher emailMatcher = emailPattern.matcher(email);
 		if (!emailMatcher.matches())
-			return -2;
+			throw new ValidationException("Invalid e-mail! Please, type a valid e-mail for signing up.");
 
 		if (!CpfValidator.isValid((String) ((Object[]) input)[3]))
 			return -1;
