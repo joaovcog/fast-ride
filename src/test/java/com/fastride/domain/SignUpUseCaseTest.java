@@ -1,6 +1,7 @@
 package com.fastride.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Objects;
@@ -66,10 +67,14 @@ class SignUpUseCaseTest {
 	@Test
 	void shouldNotSignUpWhenAccountAlreadyExists() {
 		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", null, true, false };
-		Object signUpResult = signUpUseCase.signUp(input);
-		signUpResult = signUpUseCase.signUp(input);
+		signUpUseCase.signUp(input);
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			signUpUseCase.signUp(input);
+		});
 
-		assertEquals(-4, signUpResult);
+		assertEquals(
+				"An account with the e-mail john@example.com already exists! Please, type another e-mail for creating a new account.",
+				exception.getMessage());
 	}
 
 	@Test
