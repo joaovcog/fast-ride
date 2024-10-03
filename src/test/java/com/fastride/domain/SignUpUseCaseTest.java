@@ -37,7 +37,7 @@ class SignUpUseCaseTest {
 
 	@Test
 	void shouldSignUpPassengerSuccessfully() {
-		Object input = new Object[] { "John Doe", true, "john22@example.com", "32421438098", null, true, false };
+		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", null, true, false };
 		Object objectWithAccountId = signUpUseCase.signUp(input);
 		Object[] arrayFromObject = (Object[]) objectWithAccountId;
 		Pattern UUID_REGEX = Pattern
@@ -51,7 +51,7 @@ class SignUpUseCaseTest {
 
 	@Test
 	void shouldSignUpDriverSuccessfully() {
-		Object input = new Object[] { "John Doe", true, "joh23n@example.com", "32421438098", "ABC1234", false, true };
+		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", "ABC1234", false, true };
 		Object objectWithAccountId = signUpUseCase.signUp(input);
 		Object[] arrayFromObject = (Object[]) objectWithAccountId;
 		Pattern UUID_REGEX = Pattern
