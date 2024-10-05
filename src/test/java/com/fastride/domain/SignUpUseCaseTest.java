@@ -93,9 +93,12 @@ class SignUpUseCaseTest {
 	@ValueSource(strings = { "12345678910", "11111111111", "22222222222", "234bc" })
 	void shouldNotSignUpWhenCpfIsInvalid(String cpf) {
 		Object input = new Object[] { "John Doe", true, "john@example.com", cpf, null, true, false };
-		Object signUpResult = signUpUseCase.signUp(input);
 
-		assertEquals(-1, signUpResult);
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			signUpUseCase.signUp(input);
+		});
+
+		assertEquals("Invalid CPF! Please, type a valid CPF for signing up.", exception.getMessage());
 	}
 
 	@Test

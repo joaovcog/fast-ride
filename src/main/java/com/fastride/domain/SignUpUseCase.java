@@ -21,7 +21,7 @@ public class SignUpUseCase {
 	public Object signUp(Object input) {
 		String selectQuery = "SELECT * FROM fast_ride.account WHERE email = ?";
 		String email = (String) ((Object[]) input)[2];
-		List<Object> existantAccountIds = jdbcTemplate.query(selectQuery,
+		List<Object> existantAccountIds = this.jdbcTemplate.query(selectQuery,
 				(resultSet, rowNumber) -> new String(resultSet.getString("account_id")), email);
 		if (!existantAccountIds.isEmpty())
 			throw new ValidationException(String.format("An account with the e-mail %s already exists! "
@@ -37,8 +37,9 @@ public class SignUpUseCase {
 		if (!emailMatcher.matches())
 			throw new ValidationException("Invalid e-mail! Please, type a valid e-mail for signing up.");
 
-		if (!CpfValidator.isValid((String) ((Object[]) input)[3]))
-			return -1;
+		String cpf = (String) ((Object[]) input)[3];
+		if (!CpfValidator.isValid(cpf))
+			throw new ValidationException("Invalid CPF! Please, type a valid CPF for signing up.");
 
 		if ((boolean) ((Object[]) input)[6]) {
 			String carPlate = (String) ((Object[]) input)[4];
@@ -48,7 +49,7 @@ public class SignUpUseCase {
 
 		String insertQuery = "INSERT INTO fast_ride.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		UUID id = UUID.randomUUID();
-		jdbcTemplate.update(insertQuery, id, (String) ((Object[]) input)[0], email, (String) ((Object[]) input)[3],
+		this.jdbcTemplate.update(insertQuery, id, (String) ((Object[]) input)[0], email, cpf,
 				(String) ((Object[]) input)[4], (boolean) ((Object[]) input)[5], (boolean) ((Object[]) input)[6]);
 		return new Object[] { "accountId", id };
 	}
