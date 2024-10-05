@@ -1,7 +1,6 @@
 package com.fastride.domain;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,16 +40,17 @@ public class SignUpUseCase {
 		if (!CpfValidator.isValid(cpf))
 			throw new ValidationException("Invalid CPF! Please, type a valid CPF for signing up.");
 
-		if ((boolean) ((Object[]) input)[6]) {
-			String carPlate = (String) ((Object[]) input)[4];
-			if (Objects.isNull(carPlate) || !Pattern.matches("[A-Z]{3}[0-9]{4}", carPlate))
-				return -5;
+		boolean isDriver = (boolean) ((Object[]) input)[6];
+		String carPlate = (String) ((Object[]) input)[4];
+		if (isDriver && (!StringUtils.hasText(carPlate) || !Pattern.matches("[A-Z]{3}[0-9]{4}", carPlate))) {
+			throw new ValidationException(
+					"Invalid car plate! Please, type a valid car plate with 3 letters and 4 numbers for signing up.");
 		}
 
 		String insertQuery = "INSERT INTO fast_ride.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		UUID id = UUID.randomUUID();
 		this.jdbcTemplate.update(insertQuery, id, name, email, cpf, (String) ((Object[]) input)[4],
-				(boolean) ((Object[]) input)[5], (boolean) ((Object[]) input)[6]);
+				(boolean) ((Object[]) input)[5], isDriver);
 		return new Object[] { "accountId", id };
 	}
 

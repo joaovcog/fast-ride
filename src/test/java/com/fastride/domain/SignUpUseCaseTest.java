@@ -119,9 +119,13 @@ class SignUpUseCaseTest {
 	@ValueSource(strings = { "AA", "ABC-234", "AB-1234", "7896-ABC", "5462", "ABC" })
 	void shouldNotSignUpDriverWhenCarPlateIsInvalid(String carPlate) {
 		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", carPlate, false, true };
-		Object signUpResult = signUpUseCase.signUp(input);
 
-		assertEquals(-5, signUpResult);
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			signUpUseCase.signUp(input);
+		});
+
+		assertEquals("Invalid car plate! Please, type a valid car plate with 3 letters and 4 numbers for signing up.",
+				exception.getMessage());
 	}
 
 	static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
