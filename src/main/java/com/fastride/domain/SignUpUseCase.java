@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Component
 public class SignUpUseCase {
@@ -27,10 +28,9 @@ public class SignUpUseCase {
 			throw new ValidationException(String.format("An account with the e-mail %s already exists! "
 					+ "Please, type another e-mail for creating a new account.", email));
 
-		Pattern namePattern = Pattern.compile("^((?=.{1,29}$)[A-Z]\\w*(\\s[A-Z]\\w*)*)$");
-		Matcher nameMatcher = namePattern.matcher((String) ((Object[]) input)[0]);
-		if (!nameMatcher.matches())
-			return -3;
+		String name = (String) ((Object[]) input)[0];
+		if (!StringUtils.hasText(name) || !Pattern.matches("^((?=.{1,29}$)[A-Z]\\w*(\\s[A-Z]\\w*)*)$", name))
+			throw new ValidationException("Invalid name! The name should have only letters.");
 
 		Pattern emailPattern = Pattern.compile("^(.+)@(.+)$");
 		Matcher emailMatcher = emailPattern.matcher(email);
@@ -49,8 +49,8 @@ public class SignUpUseCase {
 
 		String insertQuery = "INSERT INTO fast_ride.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		UUID id = UUID.randomUUID();
-		this.jdbcTemplate.update(insertQuery, id, (String) ((Object[]) input)[0], email, cpf,
-				(String) ((Object[]) input)[4], (boolean) ((Object[]) input)[5], (boolean) ((Object[]) input)[6]);
+		this.jdbcTemplate.update(insertQuery, id, name, email, cpf, (String) ((Object[]) input)[4],
+				(boolean) ((Object[]) input)[5], (boolean) ((Object[]) input)[6]);
 		return new Object[] { "accountId", id };
 	}
 

@@ -101,12 +101,17 @@ class SignUpUseCaseTest {
 		assertEquals("Invalid CPF! Please, type a valid CPF for signing up.", exception.getMessage());
 	}
 
-	@Test
-	void shouldNotSignUpWhenNameIsInvalid() {
-		Object input = new Object[] { "", true, "john@example.com", "12345678901", null, true, false };
-		Object signUpResult = signUpUseCase.signUp(input);
+	@ParameterizedTest
+	@NullAndEmptySource
+	@ValueSource(strings = { "John Smith$", "John 5", "4553" })
+	void shouldNotSignUpWhenNameIsInvalid(String name) {
+		Object input = new Object[] { name, true, "john@example.com", "12345678901", null, true, false };
 
-		assertEquals(-3, signUpResult);
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			signUpUseCase.signUp(input);
+		});
+
+		assertEquals("Invalid name! The name should have only letters.", exception.getMessage());
 	}
 
 	@ParameterizedTest
