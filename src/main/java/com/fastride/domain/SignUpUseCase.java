@@ -1,13 +1,12 @@
 package com.fastride.domain;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Component
 public class SignUpUseCase {
@@ -19,56 +18,36 @@ public class SignUpUseCase {
 	}
 
 	public Object signUp(Object input) {
-		UUID id = UUID.randomUUID();
 		String selectQuery = "SELECT * FROM fast_ride.account WHERE email = ?";
-		List<Object> existantAccountIds = jdbcTemplate.query(selectQuery,
-				(resultSet, rowNumber) -> new String(resultSet.getString("account_id")),
-				(String) ((Object[]) input)[2]);
-		if (existantAccountIds.isEmpty()) {
-			Pattern namePattern = Pattern.compile("^((?=.{1,29}$)[A-Z]\\w*(\\s[A-Z]\\w*)*)$");
-			Matcher nameMatcher = namePattern.matcher((String) ((Object[]) input)[0]);
-			if (nameMatcher.matches()) {
-				Pattern emailPattern = Pattern.compile("^(.+)@(.+)$");
-				Matcher emailMatcher = emailPattern.matcher((String) ((Object[]) input)[2]);
-				if (emailMatcher.matches()) {
-					if (CpfValidator.isValid((String) ((Object[]) input)[3])) {
-						if ((boolean) ((Object[]) input)[6]) {
-							String carPlate = (String) ((Object[]) input)[4];
-							if (!Objects.isNull(carPlate) && Pattern.matches("[A-Z]{3}[0-9]{4}", carPlate)) {
-								String insertQuery = "INSERT INTO fast_ride.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) VALUES (?, ?, ?, ?, ?, ?, ?)";
-								jdbcTemplate.update(insertQuery, id, (String) ((Object[]) input)[0],
-										(String) ((Object[]) input)[2], (String) ((Object[]) input)[3],
-										(String) ((Object[]) input)[4], (boolean) ((Object[]) input)[5],
-										(boolean) ((Object[]) input)[6]);
-								return new Object[] { "accountId", id };
-							} else {
-								// invalid car plate
-								return -5;
-							}
-						} else {
-							String insertQuery = "INSERT INTO fast_ride.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) VALUES (?, ?, ?, ?, ?, ?, ?)";
-							jdbcTemplate.update(insertQuery, id, (String) ((Object[]) input)[0],
-									(String) ((Object[]) input)[2], (String) ((Object[]) input)[3],
-									(String) ((Object[]) input)[4], (boolean) ((Object[]) input)[5],
-									(boolean) ((Object[]) input)[6]);
-							return new Object[] { "accountId", id };
-						}
-					} else {
-						// invalid cpf
-						return -1;
-					}
-				} else {
-					// invalid email
-					return -2;
-				}
-			} else {
-				// invalid name
-				return -3;
-			}
-		} else {
-			// already exists
-			return -4;
+		String email = (String) ((Object[]) input)[2];
+		List<String> existingAccountIds = this.jdbcTemplate.query(selectQuery,
+				(resultSet, rowNumber) -> new String(resultSet.getString("account_id")), email);
+		if (!existingAccountIds.isEmpty())
+			throw new ValidationException(String.format("An account with the e-mail %s already exists! "
+					+ "Please, type another e-mail for creating a new account.", email));
+
+		String name = (String) ((Object[]) input)[0];
+		if (!StringUtils.hasText(name) || !Pattern.matches("^((?=.{1,29}$)[A-Z]\\w*(\\s[A-Z]\\w*)*)$", name))
+			throw new ValidationException("Invalid name! The name should have only letters.");
+
+		if (!Pattern.matches("^(.+)@(.+)$", email))
+			throw new ValidationException("Invalid e-mail! Please, type a valid e-mail for signing up.");
+
+		String cpf = (String) ((Object[]) input)[3];
+		if (!CpfValidator.isValid(cpf))
+			throw new ValidationException("Invalid CPF! Please, type a valid CPF for signing up.");
+
+		boolean isDriver = (boolean) ((Object[]) input)[6];
+		String carPlate = (String) ((Object[]) input)[4];
+		if (isDriver && (!StringUtils.hasText(carPlate) || !Pattern.matches("[A-Z]{3}[0-9]{4}", carPlate))) {
+			throw new ValidationException(
+					"Invalid car plate! Please, type a valid car plate with 3 letters and 4 numbers for signing up.");
 		}
+		String insertQuery = "INSERT INTO fast_ride.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		UUID id = UUID.randomUUID();
+		boolean isPassenger = (boolean) ((Object[]) input)[5];
+		this.jdbcTemplate.update(insertQuery, id, name, email, cpf, carPlate, isPassenger, isDriver);
+		return new Object[] { "accountId", id };
 	}
 
 }
