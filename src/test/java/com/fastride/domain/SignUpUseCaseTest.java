@@ -14,27 +14,20 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import com.fastride.PostgresTestContainer;
 
 @Testcontainers
 @SpringBootTest
-@ContextConfiguration(initializers = { SignUpUseCaseTest.Initializer.class })
+@ContextConfiguration(initializers = { PostgresTestContainer.Initializer.class })
 @Transactional
 class SignUpUseCaseTest {
 
 	private static final Pattern UUID_PATTERN = Pattern
 			.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
-
-	@Container
-	public static PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>("postgres:latest")
-			.withDatabaseName("fast_ride_integration_tests_db").withUsername("postgres").withPassword("root");
 
 	@Autowired
 	private SignUpUseCase signUpUseCase;
@@ -125,16 +118,6 @@ class SignUpUseCaseTest {
 
 		assertEquals("Invalid car plate! Please, type a valid car plate with 3 letters and 4 numbers for signing up.",
 				exception.getMessage());
-	}
-
-	static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-		public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-			TestPropertyValues
-					.of("spring.datasource.url=" + postgreSqlContainer.getJdbcUrl(),
-							"spring.datasource.username=" + postgreSqlContainer.getUsername(),
-							"spring.datasource.password=" + postgreSqlContainer.getPassword())
-					.applyTo(configurableApplicationContext.getEnvironment());
-		}
 	}
 
 }
