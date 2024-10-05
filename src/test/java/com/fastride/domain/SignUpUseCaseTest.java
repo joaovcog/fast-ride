@@ -29,9 +29,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Transactional
 class SignUpUseCaseTest {
 
+	private static final Pattern UUID_PATTERN = Pattern
+			.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+
 	@Container
 	public static PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>("postgres:latest")
-			.withDatabaseName("fast_ride_integration_tests_db").withUsername("").withPassword("");
+			.withDatabaseName("fast_ride_integration_tests_db").withUsername("postgres").withPassword("root");
 
 	@Autowired
 	private SignUpUseCase signUpUseCase;
@@ -39,37 +42,33 @@ class SignUpUseCaseTest {
 	@Test
 	void shouldSignUpPassengerSuccessfully() {
 		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", null, true, false };
-		Object objectWithAccountId = signUpUseCase.signUp(input);
+		Object objectWithAccountId = this.signUpUseCase.signUp(input);
 		Object[] arrayFromObject = (Object[]) objectWithAccountId;
-		Pattern UUID_REGEX = Pattern
-				.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
 		assertTrue(!Objects.isNull(objectWithAccountId));
 		assertTrue(arrayFromObject.length == 2);
 		assertEquals("accountId", arrayFromObject[0]);
-		assertTrue(UUID_REGEX.matcher(((UUID) arrayFromObject[1]).toString()).matches());
+		assertTrue(UUID_PATTERN.matcher(((UUID) arrayFromObject[1]).toString()).matches());
 	}
 
 	@Test
 	void shouldSignUpDriverSuccessfully() {
 		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", "ABC1234", false, true };
-		Object objectWithAccountId = signUpUseCase.signUp(input);
+		Object objectWithAccountId = this.signUpUseCase.signUp(input);
 		Object[] arrayFromObject = (Object[]) objectWithAccountId;
-		Pattern UUID_REGEX = Pattern
-				.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
 		assertTrue(!Objects.isNull(objectWithAccountId));
 		assertTrue(arrayFromObject.length == 2);
 		assertEquals("accountId", arrayFromObject[0]);
-		assertTrue(UUID_REGEX.matcher(((UUID) arrayFromObject[1]).toString()).matches());
+		assertTrue(UUID_PATTERN.matcher(((UUID) arrayFromObject[1]).toString()).matches());
 	}
 
 	@Test
 	void shouldNotSignUpWhenAccountAlreadyExists() {
 		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", null, true, false };
-		signUpUseCase.signUp(input);
+		this.signUpUseCase.signUp(input);
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			signUpUseCase.signUp(input);
+			this.signUpUseCase.signUp(input);
 		});
 
 		assertEquals(
@@ -82,7 +81,7 @@ class SignUpUseCaseTest {
 		Object input = new Object[] { "John Doe", true, "john@", "12345678901", null, true, false };
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			signUpUseCase.signUp(input);
+			this.signUpUseCase.signUp(input);
 		});
 
 		assertEquals("Invalid e-mail! Please, type a valid e-mail for signing up.", exception.getMessage());
@@ -95,7 +94,7 @@ class SignUpUseCaseTest {
 		Object input = new Object[] { "John Doe", true, "john@example.com", cpf, null, true, false };
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			signUpUseCase.signUp(input);
+			this.signUpUseCase.signUp(input);
 		});
 
 		assertEquals("Invalid CPF! Please, type a valid CPF for signing up.", exception.getMessage());
@@ -108,7 +107,7 @@ class SignUpUseCaseTest {
 		Object input = new Object[] { name, true, "john@example.com", "12345678901", null, true, false };
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			signUpUseCase.signUp(input);
+			this.signUpUseCase.signUp(input);
 		});
 
 		assertEquals("Invalid name! The name should have only letters.", exception.getMessage());
@@ -121,7 +120,7 @@ class SignUpUseCaseTest {
 		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", carPlate, false, true };
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			signUpUseCase.signUp(input);
+			this.signUpUseCase.signUp(input);
 		});
 
 		assertEquals("Invalid car plate! Please, type a valid car plate with 3 letters and 4 numbers for signing up.",
