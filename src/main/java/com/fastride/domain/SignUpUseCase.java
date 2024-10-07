@@ -1,27 +1,22 @@
 package com.fastride.domain;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
 public class SignUpUseCase {
 
-	private JdbcTemplate jdbcTemplate;
+	private AccountRepository accountRepository;
 
-	public SignUpUseCase(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
+	public SignUpUseCase(AccountRepository accountRepository) {
+		this.accountRepository = accountRepository;
 	}
 
 	public Account signUp(Account account) {
-		String selectQuery = "SELECT * FROM fast_ride.account WHERE email = ?";
-		List<String> existingAccountIds = this.jdbcTemplate.query(selectQuery,
-				(resultSet, rowNumber) -> new String(resultSet.getString("account_id")), account.getEmail());
-		if (!existingAccountIds.isEmpty())
+		if (accountRepository.findByEmail(account.getEmail()).isPresent())
 			throw new ValidationException(String.format("An account with the e-mail %s already exists! "
 					+ "Please, type another e-mail for creating a new account.", account.getEmail()));
 
@@ -40,11 +35,8 @@ public class SignUpUseCase {
 			throw new ValidationException(
 					"Invalid car plate! Please, type a valid car plate with 3 letters and 4 numbers for signing up.");
 		}
-		String insertQuery = "INSERT INTO fast_ride.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) VALUES (?, ?, ?, ?, ?, ?, ?)";
-		UUID accountId = UUID.randomUUID();
-		this.jdbcTemplate.update(insertQuery, accountId, account.getName(), account.getEmail(), account.getCpf(),
-				account.getCarPlate(), account.isPassenger(), account.isDriver());
-		return new Account(accountId, account);
+		account = new Account(UUID.randomUUID(), account);
+		return this.accountRepository.create(account);
 	}
 
 }

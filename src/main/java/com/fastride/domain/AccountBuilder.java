@@ -39,6 +39,16 @@ public class AccountBuilder {
 		return this;
 	}
 
+	public AccountBuilder passenger(boolean passenger) {
+		this.account.setPassenger(passenger);
+		return this;
+	}
+
+	public AccountBuilder driver(boolean driver) {
+		this.account.setDriver(driver);
+		return this;
+	}
+
 	public AccountBuilder passenger() {
 		this.account.setPassenger(true);
 		this.account.setDriver(false);
