@@ -35,7 +35,7 @@ public class SignUpUseCase {
 		if (!CpfValidator.isValid(account.getCpf()))
 			throw new ValidationException("Invalid CPF! Please, type a valid CPF for signing up.");
 
-		if (account.isDriverAccount() && (!StringUtils.hasText(account.getCarPlate())
+		if (account.isDriver() && (!StringUtils.hasText(account.getCarPlate())
 				|| !Pattern.matches("[A-Z]{3}[0-9]{4}", account.getCarPlate()))) {
 			throw new ValidationException(
 					"Invalid car plate! Please, type a valid car plate with 3 letters and 4 numbers for signing up.");
@@ -43,7 +43,7 @@ public class SignUpUseCase {
 		String insertQuery = "INSERT INTO fast_ride.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		UUID accountId = UUID.randomUUID();
 		this.jdbcTemplate.update(insertQuery, accountId, account.getName(), account.getEmail(), account.getCpf(),
-				account.getCarPlate(), account.isPassengerAccount(), account.isDriverAccount());
+				account.getCarPlate(), account.isPassenger(), account.isDriver());
 		return new Account(accountId, account);
 	}
 

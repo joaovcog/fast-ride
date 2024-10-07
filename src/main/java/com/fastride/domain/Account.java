@@ -9,8 +9,8 @@ public class Account {
 	private String email;
 	private String cpf;
 	private String carPlate;
-	private boolean passengerAccount;
-	private boolean driverAccount;
+	private boolean passenger;
+	private boolean driver;
 
 	public Account() {
 	}
@@ -21,8 +21,8 @@ public class Account {
 		this.email = account.getEmail();
 		this.cpf = account.getCpf();
 		this.carPlate = account.getCarPlate();
-		this.passengerAccount = account.isPassengerAccount();
-		this.driverAccount = account.isDriverAccount();
+		this.passenger = account.isPassenger();
+		this.driver = account.isDriver();
 	}
 
 	public UUID getAccountId() {
@@ -65,20 +65,20 @@ public class Account {
 		this.carPlate = carPlate;
 	}
 
-	public boolean isPassengerAccount() {
-		return passengerAccount;
+	public boolean isPassenger() {
+		return passenger;
 	}
 
-	void setPassengerAccount(boolean passengerAccount) {
-		this.passengerAccount = passengerAccount;
+	void setPassenger(boolean passengerAccount) {
+		this.passenger = passengerAccount;
 	}
 
-	public boolean isDriverAccount() {
-		return driverAccount;
+	public boolean isDriver() {
+		return driver;
 	}
 
-	void setDriverAccount(boolean driverAccount) {
-		this.driverAccount = driverAccount;
+	void setDriver(boolean driverAccount) {
+		this.driver = driverAccount;
 	}
 
 }

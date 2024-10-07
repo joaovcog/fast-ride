@@ -40,14 +40,14 @@ public class AccountBuilder {
 	}
 
 	public AccountBuilder passenger() {
-		this.account.setPassengerAccount(true);
-		this.account.setDriverAccount(false);
+		this.account.setPassenger(true);
+		this.account.setDriver(false);
 		return this;
 	}
 
 	public AccountBuilder driver() {
-		this.account.setDriverAccount(true);
-		this.account.setPassengerAccount(false);
+		this.account.setDriver(true);
+		this.account.setPassenger(false);
 		return this;
 	}
 
