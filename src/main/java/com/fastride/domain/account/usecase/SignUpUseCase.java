@@ -1,13 +1,12 @@
 package com.fastride.domain.account.usecase;
 
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.AccountRepository;
+import com.fastride.domain.account.validation.CarPlateValidator;
 import com.fastride.domain.account.validation.CpfValidator;
 import com.fastride.domain.account.validation.EmailValidator;
 import com.fastride.domain.account.validation.NameValidator;
@@ -30,11 +29,8 @@ public class SignUpUseCase {
 		new NameValidator().validate(account.getName());
 		new EmailValidator().validate(account.getEmail());
 		new CpfValidator().validate(account.getCpf());
-
-		if (account.isDriver() && (!StringUtils.hasText(account.getCarPlate())
-				|| !Pattern.matches("[A-Z]{3}[0-9]{4}", account.getCarPlate()))) {
-			throw new ValidationException(
-					"Invalid car plate! Please, type a valid car plate with 3 letters and 4 numbers for signing up.");
+		if (account.isDriver()) {
+			new CarPlateValidator().validate(account.getCarPlate());
 		}
 		account = new Account(UUID.randomUUID(), account);
 		return this.accountRepository.create(account);
