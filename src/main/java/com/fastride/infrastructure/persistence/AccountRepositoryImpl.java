@@ -1,4 +1,4 @@
-package com.fastride.infrastructure;
+package com.fastride.infrastructure.persistence;
 
 import java.util.List;
 import java.util.Optional;
