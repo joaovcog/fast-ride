@@ -1,4 +1,4 @@
-package com.fastride.domain;
+package com.fastride.domain.account.model;
 
 import java.util.UUID;
 

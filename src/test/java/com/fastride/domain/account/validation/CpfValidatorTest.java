@@ -1,4 +1,4 @@
-package com.fastride.domain;
+package com.fastride.domain.account.validation;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

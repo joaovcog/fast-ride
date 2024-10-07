@@ -1,4 +1,4 @@
-package com.fastride.domain;
+package com.fastride.domain.account.usecase;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.fastride.PostgresTestContainer;
+import com.fastride.domain.account.model.Account;
+import com.fastride.domain.account.model.AccountBuilder;
+import com.fastride.domain.shared.ValidationException;
 
 @Testcontainers
 @SpringBootTest

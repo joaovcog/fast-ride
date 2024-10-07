@@ -7,9 +7,9 @@ import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.fastride.domain.Account;
-import com.fastride.domain.AccountBuilder;
-import com.fastride.domain.AccountRepository;
+import com.fastride.domain.account.model.Account;
+import com.fastride.domain.account.model.AccountBuilder;
+import com.fastride.domain.account.model.AccountRepository;
 
 @Repository
 public class AccountRepositoryImpl implements AccountRepository {

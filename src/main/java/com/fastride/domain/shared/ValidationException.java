@@ -1,4 +1,4 @@
-package com.fastride.domain;
+package com.fastride.domain.shared;
 
 public class ValidationException extends RuntimeException {
 

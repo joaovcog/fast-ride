@@ -1,10 +1,15 @@
-package com.fastride.domain;
+package com.fastride.domain.account.usecase;
 
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import com.fastride.domain.account.model.Account;
+import com.fastride.domain.account.model.AccountRepository;
+import com.fastride.domain.account.validation.CpfValidator;
+import com.fastride.domain.shared.ValidationException;
 
 @Component
 public class SignUpUseCase {
