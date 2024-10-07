@@ -29,9 +29,7 @@ public class SignUpUseCase {
 
 		new NameValidator().validate(account.getName());
 		new EmailValidator().validate(account.getEmail());
-
-		if (!CpfValidator.isValid(account.getCpf()))
-			throw new ValidationException("Invalid CPF! Please, type a valid CPF for signing up.");
+		new CpfValidator().validate(account.getCpf());
 
 		if (account.isDriver() && (!StringUtils.hasText(account.getCarPlate())
 				|| !Pattern.matches("[A-Z]{3}[0-9]{4}", account.getCarPlate()))) {
