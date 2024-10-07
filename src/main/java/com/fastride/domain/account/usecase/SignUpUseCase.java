@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.AccountRepository;
 import com.fastride.domain.account.validation.CpfValidator;
+import com.fastride.domain.account.validation.EmailValidator;
 import com.fastride.domain.account.validation.NameValidator;
 import com.fastride.domain.shared.ValidationException;
 
@@ -27,9 +28,7 @@ public class SignUpUseCase {
 					+ "Please, type another e-mail for creating a new account.", account.getEmail()));
 
 		new NameValidator().validate(account.getName());
-
-		if (!Pattern.matches("^(.+)@(.+)$", account.getEmail()))
-			throw new ValidationException("Invalid e-mail! Please, type a valid e-mail for signing up.");
+		new EmailValidator().validate(account.getEmail());
 
 		if (!CpfValidator.isValid(account.getCpf()))
 			throw new ValidationException("Invalid CPF! Please, type a valid CPF for signing up.");
