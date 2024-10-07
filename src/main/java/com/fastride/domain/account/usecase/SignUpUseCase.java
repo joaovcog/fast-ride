@@ -9,8 +9,8 @@ import com.fastride.domain.account.model.AccountRepository;
 import com.fastride.domain.account.validation.CarPlateValidator;
 import com.fastride.domain.account.validation.CpfValidator;
 import com.fastride.domain.account.validation.EmailValidator;
+import com.fastride.domain.account.validation.ExistingAccountValidator;
 import com.fastride.domain.account.validation.NameValidator;
-import com.fastride.domain.shared.ValidationException;
 
 @Component
 public class SignUpUseCase {
@@ -22,10 +22,7 @@ public class SignUpUseCase {
 	}
 
 	public Account signUp(Account account) {
-		if (accountRepository.findByEmail(account.getEmail()).isPresent())
-			throw new ValidationException(String.format("An account with the e-mail %s already exists! "
-					+ "Please, type another e-mail for creating a new account.", account.getEmail()));
-
+		new ExistingAccountValidator(accountRepository).validate(account.getEmail());
 		new NameValidator().validate(account.getName());
 		new EmailValidator().validate(account.getEmail());
 		new CpfValidator().validate(account.getCpf());
