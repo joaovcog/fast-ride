@@ -17,37 +17,34 @@ public class SignUpUseCase {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	public Object signUp(Object input) {
+	public Account signUp(Account account) {
 		String selectQuery = "SELECT * FROM fast_ride.account WHERE email = ?";
-		String email = (String) ((Object[]) input)[2];
 		List<String> existingAccountIds = this.jdbcTemplate.query(selectQuery,
-				(resultSet, rowNumber) -> new String(resultSet.getString("account_id")), email);
+				(resultSet, rowNumber) -> new String(resultSet.getString("account_id")), account.getEmail());
 		if (!existingAccountIds.isEmpty())
 			throw new ValidationException(String.format("An account with the e-mail %s already exists! "
-					+ "Please, type another e-mail for creating a new account.", email));
+					+ "Please, type another e-mail for creating a new account.", account.getEmail()));
 
-		String name = (String) ((Object[]) input)[0];
-		if (!StringUtils.hasText(name) || !Pattern.matches("^((?=.{1,29}$)[A-Z]\\w*(\\s[A-Z]\\w*)*)$", name))
+		if (!StringUtils.hasText(account.getName())
+				|| !Pattern.matches("^((?=.{1,29}$)[A-Z]\\w*(\\s[A-Z]\\w*)*)$", account.getName()))
 			throw new ValidationException("Invalid name! The name should have only letters.");
 
-		if (!Pattern.matches("^(.+)@(.+)$", email))
+		if (!Pattern.matches("^(.+)@(.+)$", account.getEmail()))
 			throw new ValidationException("Invalid e-mail! Please, type a valid e-mail for signing up.");
 
-		String cpf = (String) ((Object[]) input)[3];
-		if (!CpfValidator.isValid(cpf))
+		if (!CpfValidator.isValid(account.getCpf()))
 			throw new ValidationException("Invalid CPF! Please, type a valid CPF for signing up.");
 
-		boolean isDriver = (boolean) ((Object[]) input)[6];
-		String carPlate = (String) ((Object[]) input)[4];
-		if (isDriver && (!StringUtils.hasText(carPlate) || !Pattern.matches("[A-Z]{3}[0-9]{4}", carPlate))) {
+		if (account.isDriverAccount() && (!StringUtils.hasText(account.getCarPlate())
+				|| !Pattern.matches("[A-Z]{3}[0-9]{4}", account.getCarPlate()))) {
 			throw new ValidationException(
 					"Invalid car plate! Please, type a valid car plate with 3 letters and 4 numbers for signing up.");
 		}
 		String insertQuery = "INSERT INTO fast_ride.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) VALUES (?, ?, ?, ?, ?, ?, ?)";
-		UUID id = UUID.randomUUID();
-		boolean isPassenger = (boolean) ((Object[]) input)[5];
-		this.jdbcTemplate.update(insertQuery, id, name, email, cpf, carPlate, isPassenger, isDriver);
-		return new Object[] { "accountId", id };
+		UUID accountId = UUID.randomUUID();
+		this.jdbcTemplate.update(insertQuery, accountId, account.getName(), account.getEmail(), account.getCpf(),
+				account.getCarPlate(), account.isPassengerAccount(), account.isDriverAccount());
+		return new Account(accountId, account);
 	}
 
 }
