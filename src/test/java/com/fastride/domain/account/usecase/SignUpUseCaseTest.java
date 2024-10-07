@@ -1,11 +1,10 @@
-package com.fastride.domain;
+package com.fastride.domain.account.usecase;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Objects;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.fastride.PostgresTestContainer;
+import com.fastride.domain.account.model.Account;
+import com.fastride.domain.account.model.AccountBuilder;
+import com.fastride.domain.shared.ValidationException;
 
 @Testcontainers
 @SpringBootTest
@@ -34,34 +36,33 @@ class SignUpUseCaseTest {
 
 	@Test
 	void shouldSignUpPassengerSuccessfully() {
-		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", null, true, false };
-		Object objectWithAccountId = this.signUpUseCase.signUp(input);
-		Object[] arrayFromObject = (Object[]) objectWithAccountId;
+		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
+				.carPlate(null).passenger().build();
+		Account createdAccount = this.signUpUseCase.signUp(account);
 
-		assertTrue(!Objects.isNull(objectWithAccountId));
-		assertTrue(arrayFromObject.length == 2);
-		assertEquals("accountId", arrayFromObject[0]);
-		assertTrue(UUID_PATTERN.matcher(((UUID) arrayFromObject[1]).toString()).matches());
+		assertTrue(!Objects.isNull(createdAccount));
+		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
+		assertTrue(UUID_PATTERN.matcher(createdAccount.getAccountId().toString()).matches());
 	}
 
 	@Test
 	void shouldSignUpDriverSuccessfully() {
-		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", "ABC1234", false, true };
-		Object objectWithAccountId = this.signUpUseCase.signUp(input);
-		Object[] arrayFromObject = (Object[]) objectWithAccountId;
+		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
+				.carPlate("ABC1234").driver().build();
+		Account createdAccount = this.signUpUseCase.signUp(account);
 
-		assertTrue(!Objects.isNull(objectWithAccountId));
-		assertTrue(arrayFromObject.length == 2);
-		assertEquals("accountId", arrayFromObject[0]);
-		assertTrue(UUID_PATTERN.matcher(((UUID) arrayFromObject[1]).toString()).matches());
+		assertTrue(!Objects.isNull(createdAccount));
+		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
+		assertTrue(UUID_PATTERN.matcher(createdAccount.getAccountId().toString()).matches());
 	}
 
 	@Test
 	void shouldNotSignUpWhenAccountAlreadyExists() {
-		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", null, true, false };
-		this.signUpUseCase.signUp(input);
+		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
+				.carPlate(null).passenger().build();
+		this.signUpUseCase.signUp(account);
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.signUpUseCase.signUp(input);
+			this.signUpUseCase.signUp(account);
 		});
 
 		assertEquals(
@@ -71,10 +72,11 @@ class SignUpUseCaseTest {
 
 	@Test
 	void shouldNotSignUpWhenEmailIsInvalid() {
-		Object input = new Object[] { "John Doe", true, "john@", "12345678901", null, true, false };
+		Account account = AccountBuilder.getInstance().name("John Doe").email("john@").cpf("32421438098").carPlate(null)
+				.passenger().build();
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.signUpUseCase.signUp(input);
+			this.signUpUseCase.signUp(account);
 		});
 
 		assertEquals("Invalid e-mail! Please, type a valid e-mail for signing up.", exception.getMessage());
@@ -84,10 +86,11 @@ class SignUpUseCaseTest {
 	@NullAndEmptySource
 	@ValueSource(strings = { "12345678910", "11111111111", "22222222222", "234bc" })
 	void shouldNotSignUpWhenCpfIsInvalid(String cpf) {
-		Object input = new Object[] { "John Doe", true, "john@example.com", cpf, null, true, false };
+		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf(cpf)
+				.carPlate(null).passenger().build();
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.signUpUseCase.signUp(input);
+			this.signUpUseCase.signUp(account);
 		});
 
 		assertEquals("Invalid CPF! Please, type a valid CPF for signing up.", exception.getMessage());
@@ -97,10 +100,11 @@ class SignUpUseCaseTest {
 	@NullAndEmptySource
 	@ValueSource(strings = { "John Smith$", "John 5", "4553" })
 	void shouldNotSignUpWhenNameIsInvalid(String name) {
-		Object input = new Object[] { name, true, "john@example.com", "12345678901", null, true, false };
+		Account account = AccountBuilder.getInstance().name(name).email("john@example.com").cpf("32421438098")
+				.carPlate(null).passenger().build();
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.signUpUseCase.signUp(input);
+			this.signUpUseCase.signUp(account);
 		});
 
 		assertEquals("Invalid name! The name should have only letters.", exception.getMessage());
@@ -110,10 +114,11 @@ class SignUpUseCaseTest {
 	@NullAndEmptySource
 	@ValueSource(strings = { "AA", "ABC-234", "AB-1234", "7896-ABC", "5462", "ABC" })
 	void shouldNotSignUpDriverWhenCarPlateIsInvalid(String carPlate) {
-		Object input = new Object[] { "John Doe", true, "john@example.com", "32421438098", carPlate, false, true };
+		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
+				.carPlate(carPlate).driver().build();
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.signUpUseCase.signUp(input);
+			this.signUpUseCase.signUp(account);
 		});
 
 		assertEquals("Invalid car plate! Please, type a valid car plate with 3 letters and 4 numbers for signing up.",
