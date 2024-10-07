@@ -2,8 +2,11 @@ package com.fastride.domain.account.validation;
 
 import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
 import com.fastride.domain.shared.ValidationException;
 
+@Component
 public class CpfValidator implements Validator {
 
 	public void validate(String rawCpf) {

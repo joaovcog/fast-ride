@@ -2,10 +2,12 @@ package com.fastride.domain.account.validation;
 
 import java.util.regex.Pattern;
 
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.fastride.domain.shared.ValidationException;
 
+@Component
 public class CarPlateValidator implements Validator {
 
 	private static final String VALID_CAR_PLATE_PATTERN = "[A-Z]{3}[0-9]{4}";

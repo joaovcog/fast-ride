@@ -1,8 +1,11 @@
 package com.fastride.domain.account.validation;
 
+import org.springframework.stereotype.Component;
+
 import com.fastride.domain.account.model.AccountRepository;
 import com.fastride.domain.shared.ValidationException;
 
+@Component
 public class ExistingAccountValidator implements Validator {
 
 	private AccountRepository accountRepository;

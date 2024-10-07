@@ -2,8 +2,11 @@ package com.fastride.domain.account.validation;
 
 import java.util.regex.Pattern;
 
+import org.springframework.stereotype.Component;
+
 import com.fastride.domain.shared.ValidationException;
 
+@Component
 public class EmailValidator implements Validator {
 
 	private static final String VALID_EMAIL_PATTERN = "^(.+)@(.+)$";
