@@ -7,13 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -24,15 +25,24 @@ import com.fastride.domain.shared.ValidationException;
 
 @Testcontainers
 @SpringBootTest
-@ContextConfiguration(initializers = { PostgresTestContainer.Initializer.class })
 @Transactional
-class SignUpUseCaseTest {
+class SignUpUseCaseTest extends PostgresTestContainer {
 
 	private static final Pattern UUID_PATTERN = Pattern
 			.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
 	@Autowired
 	private SignUpUseCase signUpUseCase;
+
+	@BeforeAll
+	static void beforeAll() {
+		postgreSqlContainer.start();
+	}
+
+	@AfterAll
+	static void afterAll() {
+		postgreSqlContainer.stop();
+	}
 
 	@Test
 	void shouldSignUpPassengerSuccessfully() {
