@@ -51,7 +51,7 @@ class SignUpUseCaseTest extends PostgresTestContainer {
 	void shouldSignUpPassengerSuccessfully() {
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
 				.carPlate(null).passenger().build();
-		Account createdAccount = this.signUpUseCase.signUp(account);
+		Account createdAccount = this.signUpUseCase.execute(account);
 		Account retrievedAccount = this.getAccountUseCase.execute(createdAccount.getAccountId());
 
 		assertTrue(!Objects.isNull(createdAccount));
@@ -64,7 +64,7 @@ class SignUpUseCaseTest extends PostgresTestContainer {
 	void shouldSignUpDriverSuccessfully() {
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
 				.carPlate("ABC1234").driver().build();
-		Account createdAccount = this.signUpUseCase.signUp(account);
+		Account createdAccount = this.signUpUseCase.execute(account);
 		Account retrievedAccount = this.getAccountUseCase.execute(createdAccount.getAccountId());
 
 		assertTrue(!Objects.isNull(createdAccount));
@@ -77,9 +77,9 @@ class SignUpUseCaseTest extends PostgresTestContainer {
 	void shouldNotSignUpWhenAccountAlreadyExists() {
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
 				.carPlate(null).passenger().build();
-		this.signUpUseCase.signUp(account);
+		this.signUpUseCase.execute(account);
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.signUpUseCase.signUp(account);
+			this.signUpUseCase.execute(account);
 		});
 
 		assertEquals(
@@ -93,7 +93,7 @@ class SignUpUseCaseTest extends PostgresTestContainer {
 				.passenger().build();
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.signUpUseCase.signUp(account);
+			this.signUpUseCase.execute(account);
 		});
 
 		assertEquals("Invalid e-mail! Please, type a valid e-mail for signing up.", exception.getMessage());
@@ -107,7 +107,7 @@ class SignUpUseCaseTest extends PostgresTestContainer {
 				.carPlate(null).passenger().build();
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.signUpUseCase.signUp(account);
+			this.signUpUseCase.execute(account);
 		});
 
 		assertEquals("Invalid CPF! Please, type a valid CPF for signing up.", exception.getMessage());
@@ -121,7 +121,7 @@ class SignUpUseCaseTest extends PostgresTestContainer {
 				.carPlate(null).passenger().build();
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.signUpUseCase.signUp(account);
+			this.signUpUseCase.execute(account);
 		});
 
 		assertEquals("Invalid name! The name should have only letters.", exception.getMessage());
@@ -135,7 +135,7 @@ class SignUpUseCaseTest extends PostgresTestContainer {
 				.carPlate(carPlate).driver().build();
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.signUpUseCase.signUp(account);
+			this.signUpUseCase.execute(account);
 		});
 
 		assertEquals("Invalid car plate! Please, type a valid car plate with 3 letters and 4 numbers for signing up.",

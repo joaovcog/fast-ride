@@ -19,7 +19,7 @@ public class SignUpUseCase {
 		this.accountValidator = accountValidator;
 	}
 
-	public Account signUp(Account account) {
+	public Account execute(Account account) {
 		this.accountValidator.validate(account);
 		account = new Account(UUID.randomUUID(), account);
 		return this.accountRepository.create(account);
