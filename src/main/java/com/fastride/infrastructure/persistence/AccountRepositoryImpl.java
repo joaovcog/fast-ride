@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.fastride.domain.account.model.Account;
@@ -30,19 +31,25 @@ public class AccountRepositoryImpl implements AccountRepository {
 
 	@Override
 	public Optional<Account> findById(UUID accountId) {
-		return Optional.empty();
+		String selectQuery = "SELECT * FROM fast_ride.account WHERE account_id = ?";
+		List<Account> existingAccount = this.jdbcTemplate.query(selectQuery, accountRowMapper(), accountId);
+		return existingAccount.stream().findFirst();
 	}
 
 	@Override
 	public Optional<Account> findByEmail(String email) {
 		String selectQuery = "SELECT * FROM fast_ride.account WHERE email = ?";
-		List<Account> existingAccount = this.jdbcTemplate.query(selectQuery, (resultSet, rowNumber) -> {
+		List<Account> existingAccount = this.jdbcTemplate.query(selectQuery, accountRowMapper(), email);
+		return existingAccount.stream().findFirst();
+	}
+
+	private RowMapper<Account> accountRowMapper() {
+		return (resultSet, rowNumber) -> {
 			return AccountBuilder.getInstance().accountId(resultSet.getObject("account_id", UUID.class))
 					.name(resultSet.getString("name")).email(resultSet.getString("email"))
 					.cpf(resultSet.getString("cpf")).carPlate(resultSet.getString("car_plate"))
 					.passenger(resultSet.getBoolean("is_passenger")).driver(resultSet.getBoolean("is_driver")).build();
-		}, email);
-		return existingAccount.stream().findFirst();
+		};
 	}
 
 }
