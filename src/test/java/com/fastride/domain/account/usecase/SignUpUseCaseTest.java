@@ -34,6 +34,9 @@ class SignUpUseCaseTest extends PostgresTestContainer {
 	@Autowired
 	private SignUpUseCase signUpUseCase;
 
+	@Autowired
+	private GetAccountUseCase getAccountUseCase;
+
 	@BeforeAll
 	static void beforeAll() {
 		postgreSqlContainer.start();
@@ -49,10 +52,12 @@ class SignUpUseCaseTest extends PostgresTestContainer {
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
 				.carPlate(null).passenger().build();
 		Account createdAccount = this.signUpUseCase.signUp(account);
+		Account retrievedAccount = this.getAccountUseCase.execute(createdAccount.getAccountId());
 
 		assertTrue(!Objects.isNull(createdAccount));
 		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
 		assertTrue(UUID_PATTERN.matcher(createdAccount.getAccountId().toString()).matches());
+		assertAccount(createdAccount, retrievedAccount);
 	}
 
 	@Test
@@ -60,10 +65,12 @@ class SignUpUseCaseTest extends PostgresTestContainer {
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
 				.carPlate("ABC1234").driver().build();
 		Account createdAccount = this.signUpUseCase.signUp(account);
+		Account retrievedAccount = this.getAccountUseCase.execute(createdAccount.getAccountId());
 
 		assertTrue(!Objects.isNull(createdAccount));
 		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
 		assertTrue(UUID_PATTERN.matcher(createdAccount.getAccountId().toString()).matches());
+		assertAccount(createdAccount, retrievedAccount);
 	}
 
 	@Test
@@ -133,6 +140,16 @@ class SignUpUseCaseTest extends PostgresTestContainer {
 
 		assertEquals("Invalid car plate! Please, type a valid car plate with 3 letters and 4 numbers for signing up.",
 				exception.getMessage());
+	}
+
+	private void assertAccount(Account createdAccount, Account retrievedAccount) {
+		assertEquals(createdAccount.getAccountId(), retrievedAccount.getAccountId());
+		assertEquals(createdAccount.getName(), retrievedAccount.getName());
+		assertEquals(createdAccount.getEmail(), retrievedAccount.getEmail());
+		assertEquals(createdAccount.getCpf(), retrievedAccount.getCpf());
+		assertEquals(createdAccount.getCarPlate(), retrievedAccount.getCarPlate());
+		assertEquals(createdAccount.isPassenger(), retrievedAccount.isPassenger());
+		assertEquals(createdAccount.isDriver(), retrievedAccount.isDriver());
 	}
 
 }
