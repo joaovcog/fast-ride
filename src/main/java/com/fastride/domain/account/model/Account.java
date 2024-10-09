@@ -1,5 +1,6 @@
 package com.fastride.domain.account.model;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Account {
@@ -79,6 +80,23 @@ public class Account {
 
 	void setDriver(boolean driverAccount) {
 		this.driver = driverAccount;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(accountId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Account other = (Account) obj;
+		return Objects.equals(accountId, other.accountId);
 	}
 
 }
