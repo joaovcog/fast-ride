@@ -1,4 +1,4 @@
-package com.fastride.infrastructure.api;
+package com.fastride.infrastructure.api.account.v1;
 
 import org.springframework.stereotype.Component;
 
