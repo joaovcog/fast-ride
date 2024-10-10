@@ -19,6 +19,7 @@ public class ExistingAccountValidator implements Validator {
 		if (accountRepository.findByEmail(email).isPresent())
 			throw new ValidationException(String.format("An account with the e-mail %s already exists! "
 					+ "Please, type another e-mail for creating a new account.", email));
+		// TODO: Create validation for existing account by CPF
 	}
 
 }

@@ -23,6 +23,8 @@ public class AccountValidator {
 	}
 
 	public void validate(Account account) {
+		// TODO: create validation for account type. If both driver and passenger are
+		// false, throw an exception
 		this.existingAccountValidator.validate(account.getEmail());
 		this.nameValidator.validate(account.getName());
 		this.emailValidator.validate(account.getEmail());
