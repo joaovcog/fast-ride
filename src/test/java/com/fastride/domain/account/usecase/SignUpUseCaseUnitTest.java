@@ -25,6 +25,7 @@ import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.AccountBuilder;
 import com.fastride.domain.account.model.AccountRepository;
 import com.fastride.domain.account.validation.AccountValidator;
+import com.fastride.domain.shared.EntityId;
 
 @ExtendWith(MockitoExtension.class)
 class SignUpUseCaseUnitTest {
@@ -125,7 +126,7 @@ class SignUpUseCaseUnitTest {
 		}
 
 		@Override
-		public Optional<Account> findById(UUID accountId) {
+		public Optional<Account> findById(EntityId accountId) {
 			return this.accounts.stream().filter(account -> accountId.equals(account.getAccountId())).findFirst();
 		}
 

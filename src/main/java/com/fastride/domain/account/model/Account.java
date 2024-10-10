@@ -1,11 +1,12 @@
 package com.fastride.domain.account.model;
 
 import java.util.Objects;
-import java.util.UUID;
+
+import com.fastride.domain.shared.EntityId;
 
 public class Account {
 
-	private UUID accountId;
+	private EntityId accountId;
 	private String name;
 	private String email;
 	private String cpf;
@@ -16,7 +17,7 @@ public class Account {
 	public Account() {
 	}
 
-	public Account(UUID accountId, Account account) {
+	public Account(EntityId accountId, Account account) {
 		this.accountId = accountId;
 		this.name = account.getName();
 		this.email = account.getEmail();
@@ -26,11 +27,11 @@ public class Account {
 		this.driver = account.isDriver();
 	}
 
-	public UUID getAccountId() {
+	public EntityId getAccountId() {
 		return accountId;
 	}
 
-	void setAccountId(UUID accountId) {
+	void setAccountId(EntityId accountId) {
 		this.accountId = accountId;
 	}
 
