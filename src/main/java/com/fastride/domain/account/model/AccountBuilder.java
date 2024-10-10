@@ -2,6 +2,8 @@ package com.fastride.domain.account.model;
 
 import java.util.UUID;
 
+import com.fastride.domain.shared.EntityId;
+
 public class AccountBuilder {
 
 	private final Account account;
@@ -15,6 +17,11 @@ public class AccountBuilder {
 	}
 
 	public AccountBuilder accountId(UUID accountId) {
+		this.account.setAccountId(new EntityId(accountId));
+		return this;
+	}
+
+	public AccountBuilder accountId(EntityId accountId) {
 		this.account.setAccountId(accountId);
 		return this;
 	}
