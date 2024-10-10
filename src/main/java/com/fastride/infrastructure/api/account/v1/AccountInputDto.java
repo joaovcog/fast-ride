@@ -7,13 +7,13 @@ import jakarta.validation.constraints.NotBlank;
 
 public class AccountInputDto {
 
-	@NotBlank
+	@NotBlank(message = "Name is required.")
 	private String name;
-	@NotBlank
-	@Email
+	@NotBlank(message = "E-mail is required.")
+	@Email(message = "Invalid E-mail.")
 	private String email;
-	@NotBlank
-	@CPF
+	@NotBlank(message = "CPF is required.")
+	@CPF(message = "Invalid CPF.")
 	private String cpf;
 	private String carPlate;
 	private boolean driver;
