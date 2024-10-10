@@ -1,5 +1,6 @@
 package com.fastride.domain.account.usecase;
 
+import static com.fastride.domain.shared.EntityId.VALID_ID_PATTERN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,9 +30,6 @@ import com.fastride.domain.shared.EntityId;
 
 @ExtendWith(MockitoExtension.class)
 class SignUpUseCaseUnitTest {
-
-	private static final Pattern UUID_PATTERN = Pattern
-			.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
 	private SignUpUseCase signUpUseCase;
 	private GetAccountUseCase getAccountUseCase;
@@ -64,7 +62,7 @@ class SignUpUseCaseUnitTest {
 
 		assertTrue(!Objects.isNull(createdAccount));
 		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
-		assertTrue(UUID_PATTERN.matcher(createdAccount.getAccountId().toString()).matches());
+		assertTrue(Pattern.matches(VALID_ID_PATTERN, createdAccount.getAccountId().toString()));
 		assertAccount(createdAccount, retrievedAccount);
 	}
 
@@ -80,7 +78,7 @@ class SignUpUseCaseUnitTest {
 
 		assertTrue(!Objects.isNull(createdAccount));
 		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
-		assertTrue(UUID_PATTERN.matcher(createdAccount.getAccountId().toString()).matches());
+		assertTrue(Pattern.matches(VALID_ID_PATTERN, createdAccount.getAccountId().toString()));
 		assertAccount(createdAccount, retrievedAccount);
 		verify(this.accountRepositorySpy, times(1)).create(any(Account.class));
 		verify(this.accountRepositorySpy, times(1)).create(any(Account.class));
@@ -97,7 +95,7 @@ class SignUpUseCaseUnitTest {
 
 		assertTrue(!Objects.isNull(createdAccount));
 		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
-		assertTrue(UUID_PATTERN.matcher(createdAccount.getAccountId().toString()).matches());
+		assertTrue(Pattern.matches(VALID_ID_PATTERN, createdAccount.getAccountId().toString()));
 		verify(this.accountRepositoryMock, times(1)).create(any(Account.class));
 	}
 

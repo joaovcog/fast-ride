@@ -6,9 +6,13 @@ import java.util.regex.Pattern;
 
 public class EntityId {
 
-	private static final String VALID_ID_PATTERN = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
+	public static final String VALID_ID_PATTERN = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
 
 	private final UUID id;
+
+	public EntityId() {
+		this(UUID.randomUUID());
+	}
 
 	public EntityId(String id) {
 		validateNull(id);

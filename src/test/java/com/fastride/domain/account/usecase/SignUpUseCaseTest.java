@@ -1,5 +1,6 @@
 package com.fastride.domain.account.usecase;
 
+import static com.fastride.domain.shared.EntityId.VALID_ID_PATTERN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,9 +29,6 @@ import com.fastride.domain.shared.ValidationException;
 @Transactional
 class SignUpUseCaseTest extends PostgresTestContainer {
 
-	private static final Pattern UUID_PATTERN = Pattern
-			.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
-
 	@Autowired
 	private SignUpUseCase signUpUseCase;
 
@@ -56,7 +54,7 @@ class SignUpUseCaseTest extends PostgresTestContainer {
 
 		assertTrue(!Objects.isNull(createdAccount));
 		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
-		assertTrue(UUID_PATTERN.matcher(createdAccount.getAccountId().toString()).matches());
+		assertTrue(Pattern.matches(VALID_ID_PATTERN, createdAccount.getAccountId().toString()));
 		assertAccount(createdAccount, retrievedAccount);
 	}
 
@@ -69,7 +67,7 @@ class SignUpUseCaseTest extends PostgresTestContainer {
 
 		assertTrue(!Objects.isNull(createdAccount));
 		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
-		assertTrue(UUID_PATTERN.matcher(createdAccount.getAccountId().toString()).matches());
+		assertTrue(Pattern.matches(VALID_ID_PATTERN, createdAccount.getAccountId().toString()));
 		assertAccount(createdAccount, retrievedAccount);
 	}
 

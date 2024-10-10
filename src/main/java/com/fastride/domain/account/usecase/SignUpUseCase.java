@@ -1,7 +1,5 @@
 package com.fastride.domain.account.usecase;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Component;
 
 import com.fastride.domain.account.model.Account;
@@ -22,7 +20,7 @@ public class SignUpUseCase {
 
 	public Account execute(Account account) {
 		this.accountValidator.validate(account);
-		account = new Account(new EntityId(UUID.randomUUID()), account);
+		account = new Account(new EntityId(), account);
 		return this.accountRepository.create(account);
 	}
 

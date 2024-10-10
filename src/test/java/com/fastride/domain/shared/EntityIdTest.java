@@ -1,14 +1,17 @@
 package com.fastride.domain.shared;
 
+import static com.fastride.domain.shared.EntityId.VALID_ID_PATTERN;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,6 +20,17 @@ import org.junit.jupiter.params.provider.ValueSource;
 class EntityIdTest {
 
 	private static final String ID_AS_STRING = "9627ef53-8a51-4104-be8b-121eef607851";
+
+	@Test
+	void shouldCreateEntityIdObjectWithTheRandomId() {
+		List<EntityId> entityIds = new ArrayList<>();
+		assertDoesNotThrow(() -> {
+			entityIds.add(new EntityId());
+		});
+		assertFalse(entityIds.isEmpty());
+		assertNotNull(entityIds.get(0));
+		assertTrue(Pattern.matches(VALID_ID_PATTERN, entityIds.get(0).toString()));
+	}
 
 	@Test
 	void shouldCreateEntityIdObjectWithTheProvidedIdInString() {
