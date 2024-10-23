@@ -1,6 +1,7 @@
 package com.fastride.infrastructure.api.exceptionhandler;
 
 import java.time.OffsetDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,7 +86,7 @@ public class ApiExceptionHandlerController extends ResponseEntityExceptionHandle
 	}
 
 	private List<ApiError.Object> extractErrors(BindingResult bindingResult) {
-		return bindingResult.getAllErrors().stream().map(objectError -> {
+		List<ApiError.Object> errors = bindingResult.getAllErrors().stream().map(objectError -> {
 			String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
 			String name = objectError.getObjectName();
 			if (objectError instanceof FieldError) {
@@ -93,6 +94,8 @@ public class ApiExceptionHandlerController extends ResponseEntityExceptionHandle
 			}
 			return new ApiError.Object(name, message);
 		}).collect(Collectors.toList());
+		errors.sort(Comparator.comparing(ApiError.Object::getUserMessage));
+		return errors;
 	}
 
 }

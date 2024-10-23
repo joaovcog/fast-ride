@@ -13,20 +13,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.fastride.PostgresTestContainerInitializer;
+import com.fastride.IntegrationTest;
 import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.AccountBuilder;
 import com.fastride.domain.shared.ValidationException;
 
-@SpringBootTest
-@Testcontainers
-@ContextConfiguration(initializers = PostgresTestContainerInitializer.class)
-@Transactional
+@IntegrationTest
 class SignUpUseCaseTest {
 
 	@Autowired

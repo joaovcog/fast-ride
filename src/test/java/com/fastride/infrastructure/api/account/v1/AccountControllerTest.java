@@ -15,24 +15,16 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.fastride.FastRideApplication;
-import com.fastride.PostgresTestContainerInitializer;
+import com.fastride.IntegrationTest;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = FastRideApplication.class)
+@IntegrationTest
 @AutoConfigureMockMvc
-@Testcontainers
-@ContextConfiguration(initializers = PostgresTestContainerInitializer.class)
-@Transactional
 class AccountControllerTest {
 
 	@Autowired
@@ -175,7 +167,7 @@ class AccountControllerTest {
 		String fieldsWithErrors = contentAsString.substring(contentAsString.indexOf("\"objects"),
 				contentAsString.indexOf("}]}"));
 		assertEquals(
-				"\"objects\":[{\"name\":\"cpf\",\"userMessage\":\"Invalid CPF.\"},{\"name\":\"cpf\",\"userMessage\":\"CPF is required.\"",
+				"\"objects\":[{\"name\":\"cpf\",\"userMessage\":\"CPF is required.\"},{\"name\":\"cpf\",\"userMessage\":\"Invalid CPF.\"",
 				fieldsWithErrors);
 	}
 
