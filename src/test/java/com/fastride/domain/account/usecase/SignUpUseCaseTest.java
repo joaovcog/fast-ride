@@ -8,42 +8,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.fastride.PostgresTestContainer;
+import com.fastride.PostgresTestContainerInitializer;
 import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.AccountBuilder;
 import com.fastride.domain.shared.ValidationException;
 
-@Testcontainers
 @SpringBootTest
+@Testcontainers
+@ContextConfiguration(initializers = PostgresTestContainerInitializer.class)
 @Transactional
-class SignUpUseCaseTest extends PostgresTestContainer {
+class SignUpUseCaseTest {
 
 	@Autowired
 	private SignUpUseCase signUpUseCase;
 
 	@Autowired
 	private GetAccountUseCase getAccountUseCase;
-
-	@BeforeAll
-	static void beforeAll() {
-		postgreSqlContainer.start();
-	}
-
-	@AfterAll
-	static void afterAll() {
-		postgreSqlContainer.stop();
-	}
 
 	@Test
 	void shouldSignUpPassengerSuccessfully() {

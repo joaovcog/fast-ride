@@ -81,7 +81,7 @@ class SignUpUseCaseUnitTest {
 		assertTrue(Pattern.matches(VALID_ID_PATTERN, createdAccount.getAccountId().toString()));
 		assertAccount(createdAccount, retrievedAccount);
 		verify(this.accountRepositorySpy, times(1)).create(any(Account.class));
-		verify(this.accountRepositorySpy, times(1)).create(any(Account.class));
+		verify(this.accountRepositorySpy, times(1)).findById(any(EntityId.class));
 	}
 
 	@Test
