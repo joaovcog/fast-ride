@@ -84,10 +84,9 @@ class SignUpUseCaseTest {
 	@NullAndEmptySource
 	@ValueSource(strings = { "12345678910", "11111111111", "22222222222", "234bc" })
 	void shouldNotSignUpWhenCpfIsInvalid(String cpf) {
-		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf(cpf)
-				.carPlate(null).passenger().build();
-
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf(cpf)
+					.carPlate(null).passenger().build();
 			this.signUpUseCase.execute(account);
 		});
 

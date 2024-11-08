@@ -1,31 +1,27 @@
-package com.fastride.domain.account.validation;
+package com.fastride.domain.account.model;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.BeforeEach;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.fastride.domain.shared.ValidationException;
 
-class CpfValidatorTest {
-
-	private CpfValidator cpfValidator;
-
-	@BeforeEach
-	void setup() {
-		this.cpfValidator = new CpfValidator();
-	}
+class CpfTest {
 
 	@ParameterizedTest
 	@NullAndEmptySource
 	@ValueSource(strings = { "12345678910", "11111111111", "22222222222", "234bc", "1122334455", "112233445566" })
-	void shouldNotSignUpWhenCpfIsInvalid(String cpf) {
+	void shouldNotCreateCpfValueObjectWhenCpfIsInvalid(String cpfContent) {
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.cpfValidator.validate(cpf);
+			new Cpf(cpfContent);
 		});
 
 		assertEquals("Invalid CPF! Please, type a valid CPF for signing up.", exception.getMessage());
@@ -33,10 +29,15 @@ class CpfValidatorTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = { "96311015099", "963.110.150-99" })
-	void shouldValidateCpfSuccesfullyWithElevenNumbersWithAndWithoutMask(String cpf) {
+	void shouldCreateCpfValueObjectSuccesfullyWithElevenNumbersWithAndWithoutMask(String cpfContent) {
+		List<Cpf> createdCpf = new ArrayList<>();
 		assertDoesNotThrow(() -> {
-			this.cpfValidator.validate(cpf);
+			Cpf cpf = new Cpf(cpfContent);
+			createdCpf.add(cpf);
 		});
+		assertEquals(1, createdCpf.size());
+		assertNotNull(createdCpf.get(0));
+		assertNotNull(createdCpf.get(0).getContent());
 	}
 
 }
