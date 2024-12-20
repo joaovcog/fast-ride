@@ -1,15 +1,24 @@
-package com.fastride.domain.account.validation;
+package com.fastride.domain.account.model;
 
+import java.util.Objects;
 import java.util.Optional;
-
-import org.springframework.stereotype.Component;
 
 import com.fastride.domain.shared.ValidationException;
 
-@Component
-public class CpfValidator implements Validator {
+public class Cpf {
 
-	public void validate(String rawCpf) {
+	private final String cpfContent;
+
+	public Cpf(String cpfContent) {
+		this.validate(cpfContent);
+		this.cpfContent = cpfContent;
+	}
+
+	public String getContent() {
+		return this.cpfContent;
+	}
+
+	private void validate(String rawCpf) {
 		String cpf = removeNonDigits(rawCpf);
 		if (isInvalidLength(cpf) || hasAllDigitsEqual(cpf) || hasInvalidDigits(cpf))
 			throw new ValidationException("Invalid CPF! Please, type a valid CPF for signing up.");
@@ -52,6 +61,23 @@ public class CpfValidator implements Validator {
 
 	private String extractDigit(String cpf) {
 		return cpf.substring(9);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(cpfContent);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cpf other = (Cpf) obj;
+		return Objects.equals(cpfContent, other.cpfContent);
 	}
 
 }

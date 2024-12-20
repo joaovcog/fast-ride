@@ -37,7 +37,7 @@ public class AccountBuilder {
 	}
 
 	public AccountBuilder cpf(String cpf) {
-		this.account.setCpf(cpf);
+		this.account.setCpf(new Cpf(cpf));
 		return this;
 	}
 

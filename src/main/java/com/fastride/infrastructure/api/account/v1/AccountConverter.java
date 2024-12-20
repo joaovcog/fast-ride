@@ -19,7 +19,7 @@ public class AccountConverter {
 		accountOutputDto.setAccountId(account.getAccountId().toString());
 		accountOutputDto.setName(account.getName());
 		accountOutputDto.setEmail(account.getEmail());
-		accountOutputDto.setCpf(account.getCpf());
+		accountOutputDto.setCpf(account.getCpf().getContent());
 		accountOutputDto.setCarPlate(account.getCarPlate());
 		accountOutputDto.setPassenger(account.isPassenger());
 		accountOutputDto.setDriver(account.isDriver());

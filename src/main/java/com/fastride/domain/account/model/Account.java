@@ -9,7 +9,7 @@ public class Account {
 	private EntityId accountId;
 	private String name;
 	private String email;
-	private String cpf;
+	private Cpf cpf;
 	private String carPlate;
 	private boolean passenger;
 	private boolean driver;
@@ -51,11 +51,11 @@ public class Account {
 		this.email = email;
 	}
 
-	public String getCpf() {
+	public Cpf getCpf() {
 		return cpf;
 	}
 
-	void setCpf(String cpf) {
+	void setCpf(Cpf cpf) {
 		this.cpf = cpf;
 	}
 
