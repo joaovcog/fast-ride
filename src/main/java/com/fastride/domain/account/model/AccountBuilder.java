@@ -27,7 +27,7 @@ public class AccountBuilder {
 	}
 
 	public AccountBuilder name(String name) {
-		this.account.setName(name);
+		this.account.setName(new Name(name));
 		return this;
 	}
 

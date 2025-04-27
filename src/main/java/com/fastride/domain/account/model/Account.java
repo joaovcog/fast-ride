@@ -7,7 +7,7 @@ import com.fastride.domain.shared.EntityId;
 public class Account {
 
 	private EntityId accountId;
-	private String name;
+	private Name name;
 	private String email;
 	private Cpf cpf;
 	private String carPlate;
@@ -35,11 +35,11 @@ public class Account {
 		this.accountId = accountId;
 	}
 
-	public String getName() {
+	public Name getName() {
 		return name;
 	}
 
-	void setName(String name) {
+	void setName(Name name) {
 		this.name = name;
 	}
 

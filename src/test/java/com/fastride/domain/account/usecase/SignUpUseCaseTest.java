@@ -4,6 +4,9 @@ import static com.fastride.domain.shared.EntityId.VALID_ID_PATTERN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -12,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fastride.IntegrationTest;
@@ -24,6 +28,8 @@ class SignUpUseCaseTest {
 
 	@Autowired
 	private SignUpUseCase signUpUseCase;
+
+	private SignUpUseCase signUpUseCaseSpy;
 
 	@Autowired
 	private GetAccountUseCase getAccountUseCase;
@@ -97,14 +103,16 @@ class SignUpUseCaseTest {
 	@NullAndEmptySource
 	@ValueSource(strings = { "John Smith$", "John 5", "4553" })
 	void shouldNotSignUpWhenNameIsInvalid(String name) {
-		Account account = AccountBuilder.getInstance().name(name).email("john@example.com").cpf("32421438098")
-				.carPlate(null).passenger().build();
+		this.signUpUseCaseSpy = Mockito.spy(this.signUpUseCase);
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.signUpUseCase.execute(account);
+			Account account = AccountBuilder.getInstance().name(name).email("john@example.com").cpf("32421438098")
+					.carPlate(null).passenger().build();
+			this.signUpUseCaseSpy.execute(account);
 		});
 
 		assertEquals("Invalid name! The name should have only letters.", exception.getMessage());
+		verify(this.signUpUseCaseSpy, never()).execute(any(Account.class));
 	}
 
 	@ParameterizedTest
