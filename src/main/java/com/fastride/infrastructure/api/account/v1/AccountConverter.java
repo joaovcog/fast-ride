@@ -17,7 +17,7 @@ public class AccountConverter {
 	public AccountOutputDto toOutputDto(Account account) {
 		AccountOutputDto accountOutputDto = new AccountOutputDto();
 		accountOutputDto.setAccountId(account.getAccountId().toString());
-		accountOutputDto.setName(account.getName());
+		accountOutputDto.setName(account.getName().getContent());
 		accountOutputDto.setEmail(account.getEmail());
 		accountOutputDto.setCpf(account.getCpf().getContent());
 		accountOutputDto.setCarPlate(account.getCarPlate());
