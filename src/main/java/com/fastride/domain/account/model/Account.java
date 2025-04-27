@@ -8,7 +8,7 @@ public class Account {
 
 	private EntityId accountId;
 	private Name name;
-	private String email;
+	private Email email;
 	private Cpf cpf;
 	private String carPlate;
 	private boolean passenger;
@@ -43,11 +43,11 @@ public class Account {
 		this.name = name;
 	}
 
-	public String getEmail() {
+	public Email getEmail() {
 		return email;
 	}
 
-	void setEmail(String email) {
+	void setEmail(Email email) {
 		this.email = email;
 	}
 

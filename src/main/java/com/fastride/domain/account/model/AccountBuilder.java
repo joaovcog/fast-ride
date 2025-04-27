@@ -32,7 +32,7 @@ public class AccountBuilder {
 	}
 
 	public AccountBuilder email(String email) {
-		this.account.setEmail(email);
+		this.account.setEmail(new Email(email));
 		return this;
 	}
 

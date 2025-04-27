@@ -8,21 +8,17 @@ import com.fastride.domain.account.model.Account;
 public class AccountValidator {
 
 	private ExistingAccountValidator existingAccountValidator;
-	private EmailValidator emailValidator;
 	private CarPlateValidator carPlateValidator;
 
-	public AccountValidator(ExistingAccountValidator existingAccountValidator, EmailValidator emailValidator,
-			CarPlateValidator carPlateValidator) {
+	public AccountValidator(ExistingAccountValidator existingAccountValidator, CarPlateValidator carPlateValidator) {
 		this.existingAccountValidator = existingAccountValidator;
-		this.emailValidator = emailValidator;
 		this.carPlateValidator = carPlateValidator;
 	}
 
 	public void validate(Account account) {
 		// TODO: create validation for account type. If both driver and passenger are
 		// false, throw an exception
-		this.existingAccountValidator.validate(account.getEmail());
-		this.emailValidator.validate(account.getEmail());
+		this.existingAccountValidator.validate(account.getEmail().getContent());
 		if (account.isDriver()) {
 			this.carPlateValidator.validate(account.getCarPlate());
 		}
