@@ -76,14 +76,16 @@ class SignUpUseCaseTest {
 
 	@Test
 	void shouldNotSignUpWhenEmailIsInvalid() {
-		Account account = AccountBuilder.getInstance().name("John Doe").email("john@").cpf("32421438098").carPlate(null)
-				.passenger().build();
+		this.signUpUseCaseSpy = Mockito.spy(this.signUpUseCase);
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			Account account = AccountBuilder.getInstance().name("John Doe").email("john@").cpf("32421438098")
+					.carPlate(null).passenger().build();
 			this.signUpUseCase.execute(account);
 		});
 
 		assertEquals("Invalid e-mail! Please, type a valid e-mail for signing up.", exception.getMessage());
+		verify(this.signUpUseCaseSpy, never()).execute(any(Account.class));
 	}
 
 	@ParameterizedTest
