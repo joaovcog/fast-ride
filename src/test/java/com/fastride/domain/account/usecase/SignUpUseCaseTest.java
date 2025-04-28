@@ -37,7 +37,7 @@ class SignUpUseCaseTest {
 	@Test
 	void shouldSignUpPassengerSuccessfully() {
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
-				.carPlate(null).passenger().build();
+				.passenger().build();
 		Account createdAccount = this.signUpUseCase.execute(account);
 		Account retrievedAccount = this.getAccountUseCase.execute(createdAccount.getAccountId());
 
@@ -63,7 +63,7 @@ class SignUpUseCaseTest {
 	@Test
 	void shouldNotSignUpWhenAccountAlreadyExists() {
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
-				.carPlate(null).passenger().build();
+				.passenger().build();
 		this.signUpUseCase.execute(account);
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
 			this.signUpUseCase.execute(account);
@@ -121,15 +121,17 @@ class SignUpUseCaseTest {
 	@NullAndEmptySource
 	@ValueSource(strings = { "AA", "ABC-234", "AB-1234", "7896-ABC", "5462", "ABC" })
 	void shouldNotSignUpDriverWhenCarPlateIsInvalid(String carPlate) {
-		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
-				.carPlate(carPlate).driver().build();
+		this.signUpUseCaseSpy = Mockito.spy(this.signUpUseCase);
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
+					.carPlate(carPlate).driver().build();
 			this.signUpUseCase.execute(account);
 		});
 
 		assertEquals("Invalid car plate! Please, type a valid car plate with 3 letters and 4 numbers for signing up.",
 				exception.getMessage());
+		verify(this.signUpUseCaseSpy, never()).execute(any(Account.class));
 	}
 
 	private void assertAccount(Account createdAccount, Account retrievedAccount) {
