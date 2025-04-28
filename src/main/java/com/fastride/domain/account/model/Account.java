@@ -10,11 +10,11 @@ public class Account {
 	private Name name;
 	private Email email;
 	private Cpf cpf;
-	private String carPlate;
+	private CarPlate carPlate;
 	private boolean passenger;
 	private boolean driver;
 
-	public Account() {
+	Account() {
 	}
 
 	public Account(EntityId accountId, Account account) {
@@ -59,11 +59,18 @@ public class Account {
 		this.cpf = cpf;
 	}
 
-	public String getCarPlate() {
+	public CarPlate getCarPlate() {
 		return carPlate;
 	}
 
-	void setCarPlate(String carPlate) {
+	public String getCarPlateContent() {
+		if (Objects.isNull(carPlate)) {
+			return null;
+		}
+		return carPlate.getContent();
+	}
+
+	void setCarPlate(CarPlate carPlate) {
 		this.carPlate = carPlate;
 	}
 
