@@ -25,7 +25,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.AccountBuilder;
 import com.fastride.domain.account.model.AccountRepository;
-import com.fastride.domain.account.validation.AccountValidator;
 import com.fastride.domain.shared.EntityId;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,9 +32,6 @@ class SignUpUseCaseUnitTest {
 
 	private SignUpUseCase signUpUseCase;
 	private GetAccountUseCase getAccountUseCase;
-
-	@Mock
-	private AccountValidator accountValidatorMock;
 
 	@Mock
 	private AccountRepository accountRepositoryMock;
@@ -52,7 +48,7 @@ class SignUpUseCaseUnitTest {
 
 	@Test
 	void shouldSignUpPassengerSuccessfullyWithFake() {
-		this.signUpUseCase = new SignUpUseCase(this.accountRepositoryFake, this.accountValidatorMock);
+		this.signUpUseCase = new SignUpUseCase(this.accountRepositoryFake);
 		this.getAccountUseCase = new GetAccountUseCase(this.accountRepositoryFake);
 
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
@@ -68,7 +64,7 @@ class SignUpUseCaseUnitTest {
 
 	@Test
 	void shouldSignUpPassengerSuccessfullyWithSpy() {
-		this.signUpUseCase = new SignUpUseCase(this.accountRepositorySpy, this.accountValidatorMock);
+		this.signUpUseCase = new SignUpUseCase(this.accountRepositorySpy);
 		this.getAccountUseCase = new GetAccountUseCase(this.accountRepositorySpy);
 
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
@@ -86,7 +82,7 @@ class SignUpUseCaseUnitTest {
 
 	@Test
 	void shouldSignUpDriverSuccessfullyWithMock() {
-		this.signUpUseCase = new SignUpUseCase(this.accountRepositoryMock, this.accountValidatorMock);
+		this.signUpUseCase = new SignUpUseCase(this.accountRepositoryMock);
 		Account account = AccountBuilder.getInstance().accountId(UUID.randomUUID()).name("John Doe")
 				.email("john@example.com").cpf("32421438098").carPlate("ABC1234").driver().build();
 		when(this.accountRepositoryMock.create(any(Account.class))).thenReturn(account);
