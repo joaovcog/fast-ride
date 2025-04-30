@@ -90,7 +90,7 @@ class RequestRideUseCaseUnitTest {
 	}
 
 	@Test
-	void shouldNotRequestARideWhenProvidedAccountIdForPassengerAlreadyHasAnOpenRide() {
+	void shouldNotRequestARideWhenPassengerHasAnExistingRequestedRide() {
 		Account account = getValidPassengerAccount();
 		EntityId accountId = account.getAccountId();
 		when(this.accountRepository.findById(accountId)).thenReturn(Optional.of(account));

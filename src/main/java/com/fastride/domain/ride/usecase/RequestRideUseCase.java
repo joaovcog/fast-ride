@@ -2,6 +2,8 @@ package com.fastride.domain.ride.usecase;
 
 import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
 import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.AccountRepository;
 import com.fastride.domain.ride.model.Position;
@@ -10,6 +12,7 @@ import com.fastride.domain.ride.model.RideRepository;
 import com.fastride.domain.shared.EntityId;
 import com.fastride.domain.shared.ValidationException;
 
+@Component
 public class RequestRideUseCase {
 
 	private final AccountRepository accountRepository;
