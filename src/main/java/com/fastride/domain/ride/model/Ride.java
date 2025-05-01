@@ -19,85 +19,52 @@ public class Ride {
 	private RideStatus status;
 	private OffsetDateTime date;
 
-	public Ride(Account passenger, Position start, Position destination) {
-		this.passenger = passenger;
-		this.start = start;
-		this.destination = destination;
-		this.rideId = new EntityId();
-		this.status = RideStatus.REQUESTED;
-		this.date = OffsetDateTime.now();
+	private Ride(RideBuilder builder) {
+		this.rideId = new EntityId(builder.rideId);
+		this.passenger = builder.passenger;
+		this.driver = builder.driver;
+		this.fare = builder.fare;
+		this.distance = builder.distance;
+		this.start = new Position(builder.startLatitude, builder.startLongitude);
+		this.destination = new Position(builder.destinationLatitude, builder.destinationLongitude);
+		this.status = builder.status;
+		this.date = builder.date;
 	}
 
 	public EntityId getRideId() {
 		return rideId;
 	}
 
-	void setRideId(EntityId rideId) {
-		this.rideId = rideId;
-	}
-
 	public Account getPassenger() {
 		return passenger;
-	}
-
-	void setPassenger(Account passenger) {
-		this.passenger = passenger;
 	}
 
 	public Account getDriver() {
 		return driver;
 	}
 
-	void setDriver(Account driver) {
-		this.driver = driver;
-	}
-
 	public BigDecimal getFare() {
 		return fare;
-	}
-
-	void setFare(BigDecimal fare) {
-		this.fare = fare;
 	}
 
 	public BigDecimal getDistance() {
 		return distance;
 	}
 
-	void setDistance(BigDecimal distance) {
-		this.distance = distance;
-	}
-
 	public Position getStart() {
 		return start;
-	}
-
-	void setStart(Position start) {
-		this.start = start;
 	}
 
 	public Position getDestination() {
 		return destination;
 	}
 
-	void setDestination(Position destination) {
-		this.destination = destination;
-	}
-
 	public RideStatus getStatus() {
 		return status;
 	}
 
-	void setStatus(RideStatus status) {
-		this.status = status;
-	}
-
 	public OffsetDateTime getDate() {
 		return date;
-	}
-
-	void setDate(OffsetDateTime date) {
-		this.date = date;
 	}
 
 	@Override
@@ -115,6 +82,104 @@ public class Ride {
 			return false;
 		Ride other = (Ride) obj;
 		return Objects.equals(rideId, other.rideId);
+	}
+
+	public static class RideBuilder {
+
+		private String rideId;
+		private Account passenger;
+		private Account driver;
+		private BigDecimal fare;
+		private BigDecimal distance;
+		private BigDecimal startLatitude;
+		private BigDecimal startLongitude;
+		private BigDecimal destinationLatitude;
+		private BigDecimal destinationLongitude;
+		private RideStatus status;
+		private OffsetDateTime date;
+
+		public static RideBuilder getInstance() {
+			return new RideBuilder();
+		}
+
+		public RideBuilder rideId(String rideId) {
+			this.rideId = rideId;
+			return this;
+		}
+
+		public RideBuilder passenger(Account passenger) {
+			this.passenger = passenger;
+			return this;
+		}
+
+		public RideBuilder driver(Account driver) {
+			this.driver = driver;
+			return this;
+		}
+
+		public RideBuilder fare(BigDecimal fare) {
+			this.fare = fare;
+			return this;
+		}
+
+		public RideBuilder distance(BigDecimal distance) {
+			this.distance = distance;
+			return this;
+		}
+
+		public RideBuilder startLatitude(BigDecimal startLatitude) {
+			this.startLatitude = startLatitude;
+			return this;
+		}
+
+		public RideBuilder startLongitude(BigDecimal startLongitude) {
+			this.startLongitude = startLongitude;
+			return this;
+		}
+
+		public RideBuilder start(Position start) {
+			this.startLatitude = start.latitude();
+			this.startLongitude = start.longitude();
+			return this;
+		}
+
+		public RideBuilder destinationLatitude(BigDecimal destinationLatitude) {
+			this.destinationLatitude = destinationLatitude;
+			return this;
+		}
+
+		public RideBuilder destinationLongitude(BigDecimal destinationLongitude) {
+			this.destinationLongitude = destinationLongitude;
+			return this;
+		}
+
+		public RideBuilder destination(Position destination) {
+			this.destinationLatitude = destination.latitude();
+			this.destinationLongitude = destination.longitude();
+			return this;
+		}
+
+		public RideBuilder status(RideStatus status) {
+			this.status = status;
+			return this;
+		}
+
+		public RideBuilder date(OffsetDateTime date) {
+			this.date = date;
+			return this;
+		}
+
+		public RideBuilder request() {
+			this.rideId = new EntityId().toString();
+			this.status = RideStatus.REQUESTED;
+			this.date = OffsetDateTime.now();
+			return this;
+		}
+
+		public Ride build() {
+			return new Ride(this);
+		}
+
 	}
 
 }

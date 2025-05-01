@@ -1,0 +1,1 @@
+ALTER TABLE fast_ride.ride ALTER COLUMN date TYPE timestamp with time zone USING date AT TIME ZONE 'UTC';

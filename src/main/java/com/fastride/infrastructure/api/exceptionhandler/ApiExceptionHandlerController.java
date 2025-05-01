@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.fastride.domain.account.exception.AccountNotFoundException;
+import com.fastride.domain.shared.ResourceNotFoundException;
 import com.fastride.domain.shared.ValidationException;
 
 @RestControllerAdvice
@@ -41,8 +41,8 @@ public class ApiExceptionHandlerController extends ResponseEntityExceptionHandle
 		return handleExceptionInternal(ex, error, new HttpHeaders(), statusCode, request);
 	}
 
-	@ExceptionHandler(AccountNotFoundException.class)
-	public ResponseEntity<?> handleAccountNotFound(AccountNotFoundException ex, WebRequest request) {
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<?> handleAccountNotFound(ResourceNotFoundException ex, WebRequest request) {
 		HttpStatusCode statusCode = HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value());
 		ApiErrorType errorType = ApiErrorType.RESOURCE_NOT_FOUND;
 		String detail = ex.getMessage();

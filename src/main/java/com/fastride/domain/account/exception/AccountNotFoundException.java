@@ -1,6 +1,8 @@
 package com.fastride.domain.account.exception;
 
-public class AccountNotFoundException extends RuntimeException {
+import com.fastride.domain.shared.ResourceNotFoundException;
+
+public class AccountNotFoundException extends ResourceNotFoundException {
 
 	private static final long serialVersionUID = 1L;
 

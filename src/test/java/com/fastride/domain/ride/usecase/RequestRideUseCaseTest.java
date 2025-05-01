@@ -26,6 +26,9 @@ class RequestRideUseCaseTest {
 	private RequestRideUseCase requestRideUseCase;
 
 	@Autowired
+	private GetRideUseCase getRideUseCase;
+
+	@Autowired
 	private SignUpUseCase signUpUseCase;
 
 	@Test
@@ -35,6 +38,7 @@ class RequestRideUseCaseTest {
 		Account createdAccount = this.signUpUseCase.execute(account);
 
 		Ride ride = this.requestRideUseCase.execute(createdAccount.getAccountId(), getStart(), getDestination());
+		ride = this.getRideUseCase.execute(ride.getRideId());
 
 		assertNotNull(ride);
 		assertNotNull(ride.getRideId());
