@@ -8,6 +8,7 @@ import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.AccountRepository;
 import com.fastride.domain.ride.model.Position;
 import com.fastride.domain.ride.model.Ride;
+import com.fastride.domain.ride.model.Ride.RideBuilder;
 import com.fastride.domain.ride.model.RideRepository;
 import com.fastride.domain.shared.EntityId;
 import com.fastride.domain.shared.ValidationException;
@@ -32,7 +33,9 @@ public class RequestRideUseCase {
 		if (this.rideRepository.hasRequestedRideByAccountId(passengerId))
 			throw new ValidationException(
 					"A ride has already been requested for the passenger. You must complete or cancel the existing ride before requesting another one.");
-		return this.rideRepository.create(new Ride(account.get(), start, destination));
+		Ride ride = RideBuilder.getInstance().request().passenger(account.get()).start(start).destination(destination)
+				.build();
+		return this.rideRepository.create(ride);
 	}
 
 }
