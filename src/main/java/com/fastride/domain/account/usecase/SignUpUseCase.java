@@ -17,10 +17,11 @@ public class SignUpUseCase {
 		this.accountRepository = accountRepository;
 	}
 
-	public Account execute(Account account) {
+	public EntityId execute(Account account) {
 		this.validateExistingAccount(account.getEmail());
 		account = new Account(new EntityId(), account);
-		return this.accountRepository.create(account);
+		this.accountRepository.create(account);
+		return account.getAccountId();
 	}
 
 	private void validateExistingAccount(Email email) {

@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.fastride.IntegrationTest;
 import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.AccountBuilder;
+import com.fastride.domain.shared.EntityId;
 import com.fastride.domain.shared.ValidationException;
 
 @IntegrationTest
@@ -38,26 +39,24 @@ class SignUpUseCaseTest {
 	void shouldSignUpPassengerSuccessfully() {
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
 				.passenger().build();
-		Account createdAccount = this.signUpUseCase.execute(account);
-		Account retrievedAccount = this.getAccountUseCase.execute(createdAccount.getAccountId());
+		EntityId accountId = this.signUpUseCase.execute(account);
+		Account retrievedAccount = this.getAccountUseCase.execute(accountId);
 
-		assertTrue(!Objects.isNull(createdAccount));
-		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
-		assertTrue(Pattern.matches(VALID_ID_PATTERN, createdAccount.getAccountId().toString()));
-		assertAccount(createdAccount, retrievedAccount);
+		assertTrue(!Objects.isNull(accountId));
+		assertTrue(Pattern.matches(VALID_ID_PATTERN, accountId.toString()));
+		assertAccount(new Account(accountId, account), retrievedAccount);
 	}
 
 	@Test
 	void shouldSignUpDriverSuccessfully() {
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
 				.carPlate("ABC1234").driver().build();
-		Account createdAccount = this.signUpUseCase.execute(account);
-		Account retrievedAccount = this.getAccountUseCase.execute(createdAccount.getAccountId());
+		EntityId accountId = this.signUpUseCase.execute(account);
+		Account retrievedAccount = this.getAccountUseCase.execute(accountId);
 
-		assertTrue(!Objects.isNull(createdAccount));
-		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
-		assertTrue(Pattern.matches(VALID_ID_PATTERN, createdAccount.getAccountId().toString()));
-		assertAccount(createdAccount, retrievedAccount);
+		assertTrue(!Objects.isNull(accountId));
+		assertTrue(Pattern.matches(VALID_ID_PATTERN, accountId.toString()));
+		assertAccount(new Account(accountId, account), retrievedAccount);
 	}
 
 	@Test

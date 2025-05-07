@@ -33,10 +33,9 @@ public class AccountController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public AccountOutputDto signUp(@RequestBody @Valid AccountInputDto accountInput) {
+	public String signUp(@RequestBody @Valid AccountInputDto accountInput) {
 		Account account = this.accountConverter.toEntity(accountInput);
-		account = this.signUpUseCase.execute(account);
-		return this.accountConverter.toOutputDto(account);
+		return this.signUpUseCase.execute(account).toString();
 	}
 
 	@GetMapping("/{accountId}")

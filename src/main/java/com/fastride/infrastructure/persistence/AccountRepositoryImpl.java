@@ -23,12 +23,11 @@ public class AccountRepositoryImpl implements AccountRepository {
 	}
 
 	@Override
-	public Account create(Account account) {
+	public void create(Account account) {
 		String insertQuery = "INSERT INTO fast_ride.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		this.jdbcTemplate.update(insertQuery, account.getAccountId().toUUID(), account.getName().getContent(),
 				account.getEmail().getContent(), account.getCpf().getContent(), account.getCarPlateContent(),
 				account.isPassenger(), account.isDriver());
-		return account;
 	}
 
 	@Override
