@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.fastride.domain.account.model.Account;
-import com.fastride.domain.account.model.AccountBuilder;
+import com.fastride.domain.account.model.Account.AccountBuilder;
 import com.fastride.domain.ride.model.Ride;
 import com.fastride.domain.ride.model.Ride.RideBuilder;
 import com.fastride.domain.ride.model.RideRepository;
@@ -56,10 +56,10 @@ public class RideRepositoryImpl implements RideRepository {
 	private RowMapper<Ride> rideRowMapper() {
 		return (resultSet, rowNumber) -> {
 			Account passengerAccount = AccountBuilder.getInstance()
-					.accountId(resultSet.getObject("account_id", UUID.class)).name(resultSet.getString("name"))
-					.email(resultSet.getString("email")).cpf(resultSet.getString("cpf"))
-					.carPlate(resultSet.getString("car_plate")).passenger(resultSet.getBoolean("is_passenger"))
-					.driver(resultSet.getBoolean("is_driver")).build();
+					.accountId(resultSet.getObject("account_id", UUID.class).toString())
+					.name(resultSet.getString("name")).email(resultSet.getString("email"))
+					.cpf(resultSet.getString("cpf")).carPlate(resultSet.getString("car_plate"))
+					.passenger(resultSet.getBoolean("is_passenger")).driver(resultSet.getBoolean("is_driver")).build();
 
 			return RideBuilder.getInstance().rideId(resultSet.getObject("ride_id", UUID.class).toString())
 					.passenger(passengerAccount).fare(resultSet.getBigDecimal("fare"))

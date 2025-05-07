@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fastride.IntegrationTest;
-import com.fastride.domain.account.model.AccountBuilder;
+import com.fastride.domain.account.usecase.SignUpInput;
 import com.fastride.domain.account.usecase.SignUpUseCase;
 import com.fastride.domain.ride.model.Position;
 import com.fastride.domain.ride.model.Ride;
@@ -39,8 +39,8 @@ class RideControllerTest {
 
 	@Test
 	void shouldCallPostEndpointForRideAndRequestARideForAPassengerSuccessfullyWithStatusCodeCreated() throws Exception {
-		String accountId = this.signUpUseCase.execute(AccountBuilder.getInstance().name("John Doe")
-				.email("john@example.com").cpf("32421438098").passenger().build()).toString();
+		SignUpInput signUpInput = new SignUpInput("John Doe", "john@example.com", "32421438098", null, true, false);
+		String accountId = this.signUpUseCase.execute(signUpInput).toString();
 		String inputJson = """
 				{
 					"passengerId": "%s",
@@ -58,8 +58,8 @@ class RideControllerTest {
 
 	@Test
 	void shouldCallGetEndpointForRideAndReturnAnExistingRide() throws Exception {
-		EntityId accountId = this.signUpUseCase.execute(AccountBuilder.getInstance().name("John Doe")
-				.email("john@example.com").cpf("32421438098").passenger().build());
+		SignUpInput signUpInput = new SignUpInput("John Doe", "john@example.com", "32421438098", null, true, false);
+		EntityId accountId = this.signUpUseCase.execute(signUpInput);
 		Ride ride = this.requestRideUseCase.execute(accountId, getStart(), getDestination());
 
 		ResultActions result = mockMvc

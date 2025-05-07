@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +23,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fastride.domain.account.model.Account;
-import com.fastride.domain.account.model.AccountBuilder;
 import com.fastride.domain.account.model.AccountRepository;
 import com.fastride.domain.shared.EntityId;
 
@@ -57,9 +55,8 @@ class SignUpUseCaseUnitTest {
 		this.signUpUseCase = new SignUpUseCase(this.accountRepositoryFake);
 		this.getAccountUseCase = new GetAccountUseCase(this.accountRepositoryFake);
 
-		Account account = AccountBuilder.getInstance().name(ACCOUNT_NAME).email(ACCOUNT_EMAIL).cpf(ACCOUNT_CPF)
-				.carPlate(null).passenger().build();
-		EntityId accountId = this.signUpUseCase.execute(account);
+		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, null, true, false);
+		EntityId accountId = this.signUpUseCase.execute(signUpInput);
 		Account retrievedAccount = this.getAccountUseCase.execute(accountId);
 
 		assertTrue(!Objects.isNull(accountId));
@@ -78,9 +75,8 @@ class SignUpUseCaseUnitTest {
 		this.signUpUseCase = new SignUpUseCase(this.accountRepositorySpy);
 		this.getAccountUseCase = new GetAccountUseCase(this.accountRepositorySpy);
 
-		Account account = AccountBuilder.getInstance().name(ACCOUNT_NAME).email(ACCOUNT_EMAIL).cpf(ACCOUNT_CPF)
-				.carPlate(null).passenger().build();
-		EntityId accountId = this.signUpUseCase.execute(account);
+		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, null, true, false);
+		EntityId accountId = this.signUpUseCase.execute(signUpInput);
 		Account retrievedAccount = this.getAccountUseCase.execute(accountId);
 
 		assertTrue(!Objects.isNull(accountId));
@@ -99,10 +95,9 @@ class SignUpUseCaseUnitTest {
 	@Test
 	void shouldCreateAccountForDriverSuccessfullyWithMock() {
 		this.signUpUseCase = new SignUpUseCase(this.accountRepositoryMock);
-		Account account = AccountBuilder.getInstance().accountId(UUID.randomUUID()).name(ACCOUNT_NAME)
-				.email(ACCOUNT_EMAIL).cpf(ACCOUNT_CPF).carPlate(DRIVER_ACCOUNT_CAR_PLATE).driver().build();
-
-		EntityId accountId = this.signUpUseCase.execute(account);
+		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, DRIVER_ACCOUNT_CAR_PLATE,
+				false, true);
+		EntityId accountId = this.signUpUseCase.execute(signUpInput);
 
 		assertTrue(!Objects.isNull(accountId));
 		assertTrue(Pattern.matches(VALID_ID_PATTERN, accountId.toString()));

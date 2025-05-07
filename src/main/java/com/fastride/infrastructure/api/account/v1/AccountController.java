@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.usecase.GetAccountUseCase;
+import com.fastride.domain.account.usecase.SignUpInput;
 import com.fastride.domain.account.usecase.SignUpUseCase;
 import com.fastride.domain.shared.EntityId;
 
@@ -33,9 +33,11 @@ public class AccountController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public String signUp(@RequestBody @Valid AccountInputDto accountInput) {
-		Account account = this.accountConverter.toEntity(accountInput);
-		return this.signUpUseCase.execute(account).toString();
+	public String signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
+		SignUpInput signUpInput = new SignUpInput(signUpRequest.getName(), signUpRequest.getEmail(),
+				signUpRequest.getCpf(), signUpRequest.getCarPlate(), signUpRequest.isPassenger(),
+				signUpRequest.isDriver());
+		return this.signUpUseCase.execute(signUpInput).toString();
 	}
 
 	@GetMapping("/{accountId}")

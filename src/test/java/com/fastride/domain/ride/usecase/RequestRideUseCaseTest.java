@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fastride.IntegrationTest;
 import com.fastride.domain.account.model.Account;
-import com.fastride.domain.account.model.AccountBuilder;
 import com.fastride.domain.account.usecase.GetAccountUseCase;
+import com.fastride.domain.account.usecase.SignUpInput;
 import com.fastride.domain.account.usecase.SignUpUseCase;
 import com.fastride.domain.ride.model.Position;
 import com.fastride.domain.ride.model.Ride;
@@ -22,6 +22,11 @@ import com.fastride.domain.shared.ValidationException;
 
 @IntegrationTest
 class RequestRideUseCaseTest {
+
+	private static final String ACCOUNT_NAME = "John Doe";
+	private static final String ACCOUNT_EMAIL = "john@example.com";
+	private static final String ACCOUNT_CPF = "32421438098";
+	private static final String DRIVER_ACCOUNT_CAR_PLATE = "ABC1234";
 
 	@Autowired
 	private RequestRideUseCase requestRideUseCase;
@@ -37,9 +42,8 @@ class RequestRideUseCaseTest {
 
 	@Test
 	void shouldRequestARideForThePassengerSuccessfully() {
-		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
-				.passenger().build();
-		EntityId accountId = this.signUpUseCase.execute(account);
+		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, null, true, false);
+		EntityId accountId = this.signUpUseCase.execute(signUpInput);
 		Account createdAccount = this.getAccountUseCase.execute(accountId);
 
 		Ride ride = this.requestRideUseCase.execute(createdAccount.getAccountId(), getStart(), getDestination());
@@ -67,9 +71,9 @@ class RequestRideUseCaseTest {
 
 	@Test
 	void shouldNotRequestARideForDriverAccount() {
-		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
-				.driver().carPlate("AAA1234").build();
-		EntityId accountId = this.signUpUseCase.execute(account);
+		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, DRIVER_ACCOUNT_CAR_PLATE,
+				false, true);
+		EntityId accountId = this.signUpUseCase.execute(signUpInput);
 		Account createdAccount = this.getAccountUseCase.execute(accountId);
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
@@ -81,9 +85,8 @@ class RequestRideUseCaseTest {
 
 	@Test
 	void shouldNotRequestARideWhenPassengerHasAnExistingRequestedRide() {
-		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
-				.passenger().build();
-		EntityId accountId = this.signUpUseCase.execute(account);
+		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, null, true, false);
+		EntityId accountId = this.signUpUseCase.execute(signUpInput);
 		Account createdAccount = this.getAccountUseCase.execute(accountId);
 
 		this.requestRideUseCase.execute(createdAccount.getAccountId(), getStart(), getDestination());

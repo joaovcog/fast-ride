@@ -14,17 +14,22 @@ public class Account {
 	private boolean passenger;
 	private boolean driver;
 
-	Account() {
+	private Account(AccountBuilder builder) {
+		this.accountId = this.createId(builder.accountId);
+		this.name = new Name(builder.name);
+		this.email = new Email(builder.email);
+		this.cpf = new Cpf(builder.cpf);
+		this.passenger = builder.passenger;
+		this.driver = builder.driver;
+		if (this.driver) {
+			this.carPlate = new CarPlate(builder.carPlate);
+		}
 	}
 
-	public Account(EntityId accountId, Account account) {
-		this.accountId = accountId;
-		this.name = account.getName();
-		this.email = account.getEmail();
-		this.cpf = account.getCpf();
-		this.carPlate = account.getCarPlate();
-		this.passenger = account.isPassenger();
-		this.driver = account.isDriver();
+	private EntityId createId(String accountId) {
+		if (Objects.isNull(accountId))
+			return new EntityId();
+		return new EntityId(accountId);
 	}
 
 	public EntityId getAccountId() {
@@ -105,6 +110,63 @@ public class Account {
 			return false;
 		Account other = (Account) obj;
 		return Objects.equals(accountId, other.accountId);
+	}
+
+	public static class AccountBuilder {
+		private String accountId;
+		private String name;
+		private String email;
+		private String cpf;
+		private String carPlate;
+		private boolean passenger;
+		private boolean driver;
+
+		private AccountBuilder() {
+		}
+
+		public static AccountBuilder getInstance() {
+			return new AccountBuilder();
+		}
+
+		public AccountBuilder accountId(String accountId) {
+			this.accountId = accountId;
+			return this;
+		}
+
+		public AccountBuilder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public AccountBuilder email(String email) {
+			this.email = email;
+			return this;
+		}
+
+		public AccountBuilder cpf(String cpf) {
+			this.cpf = cpf;
+			return this;
+		}
+
+		public AccountBuilder carPlate(String carPlate) {
+			this.carPlate = carPlate;
+			return this;
+		}
+
+		public AccountBuilder passenger(boolean passenger) {
+			this.passenger = passenger;
+			return this;
+		}
+
+		public AccountBuilder driver(boolean driver) {
+			this.driver = driver;
+			return this;
+		}
+
+		public Account build() {
+			return new Account(this);
+		}
+
 	}
 
 }
