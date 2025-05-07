@@ -25,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fastride.domain.account.model.Account;
-import com.fastride.domain.account.model.AccountBuilder;
+import com.fastride.domain.account.model.Account.AccountBuilder;
 import com.fastride.domain.account.model.AccountRepository;
 import com.fastride.domain.ride.model.Position;
 import com.fastride.domain.ride.model.Ride;
@@ -115,33 +115,32 @@ class RequestRideUseCaseUnitTest {
 	}
 
 	private Account getValidPassengerAccount() {
-		return AccountBuilder.getInstance().accountId(UUID.randomUUID()).name("John Doe").email("john@example.com")
-				.cpf("32421438098").passenger().build();
+		return AccountBuilder.getInstance().accountId(UUID.randomUUID().toString()).name("John Doe")
+				.email("john@example.com").cpf("32421438098").passenger(true).build();
 	}
 
 	private static Stream<Arguments> invalidAccountGenerator() {
-		return Stream.of(
-				Arguments.of(new InvalidAccountScenarioWrapper(Optional.empty(), ACCOUNT_NOT_FOUND_EXCEPTION_MESSAGE)),
-				Arguments.of(new InvalidAccountScenarioWrapper(Optional.of(getInvalidPassengerAccount()),
+		return Stream.of(Arguments.of(new InvalidAccountScenarioWrapper(null, ACCOUNT_NOT_FOUND_EXCEPTION_MESSAGE)),
+				Arguments.of(new InvalidAccountScenarioWrapper(getInvalidPassengerAccount(),
 						INVALID_PASSENGER_ACCOUNT_EXCEPTION_MESSAGE)));
 	}
 
 	private static Account getInvalidPassengerAccount() {
-		return AccountBuilder.getInstance().accountId(UUID.randomUUID()).name("John Doe").email("john@example.com")
-				.cpf("32421438098").build();
+		return AccountBuilder.getInstance().accountId(UUID.randomUUID().toString()).name("John Doe")
+				.email("john@example.com").cpf("32421438098").build();
 	}
 
 	static class InvalidAccountScenarioWrapper {
-		private Optional<Account> accountForInput;
+		private Account accountForInput;
 		private String expectedExceptionMessage;
 
-		public InvalidAccountScenarioWrapper(Optional<Account> accountForInput, String expectedExceptionMessage) {
+		public InvalidAccountScenarioWrapper(Account accountForInput, String expectedExceptionMessage) {
 			this.accountForInput = accountForInput;
 			this.expectedExceptionMessage = expectedExceptionMessage;
 		}
 
 		public Optional<Account> getAccountForInput() {
-			return accountForInput;
+			return Optional.ofNullable(accountForInput);
 		}
 
 		public String getExpectedExceptionMessage() {

@@ -17,6 +17,8 @@ public class GetAccountUseCase {
 	}
 
 	public Account execute(EntityId accountId) {
+		// TODO: return an output dto with Account information instead of exposing the
+		// whole entity
 		return this.accountRepository.findById(accountId).orElseThrow(
 				() -> new AccountNotFoundException(String.format("No account found for ID: %s", accountId)));
 	}

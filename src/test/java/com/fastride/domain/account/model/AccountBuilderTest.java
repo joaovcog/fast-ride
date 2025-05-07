@@ -14,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import com.fastride.domain.account.model.Account.AccountBuilder;
 import com.fastride.domain.shared.ValidationException;
 
 class AccountBuilderTest {
@@ -27,8 +28,8 @@ class AccountBuilderTest {
 	@Test
 	void shouldCreateAccountObjectForPassengerSuccessfully() {
 		UUID uuidForAccountId = UUID.randomUUID();
-		Account account = AccountBuilder.getInstance().accountId(uuidForAccountId).name(NAME).email(EMAIL).cpf(CPF)
-				.passenger().build();
+		Account account = AccountBuilder.getInstance().accountId(uuidForAccountId.toString()).name(NAME).email(EMAIL)
+				.cpf(CPF).passenger(true).build();
 		assertAccountInfo(uuidForAccountId, account);
 		assertPassenger(account);
 	}
@@ -38,8 +39,8 @@ class AccountBuilderTest {
 	@ValueSource(strings = { "A", "AAA-1AB2" })
 	void shouldCreateAccountObjectForPassengerSuccessfullyEvenIfProvidedNullOrInvalidCarPlate(String invalidCarPlate) {
 		UUID uuidForAccountId = UUID.randomUUID();
-		Account account = AccountBuilder.getInstance().accountId(uuidForAccountId).name(NAME).email(EMAIL).cpf(CPF)
-				.passenger().carPlate(invalidCarPlate).build();
+		Account account = AccountBuilder.getInstance().accountId(uuidForAccountId.toString()).name(NAME).email(EMAIL)
+				.cpf(CPF).passenger(true).carPlate(invalidCarPlate).build();
 		assertAccountInfo(uuidForAccountId, account);
 		assertPassenger(account);
 	}
@@ -47,8 +48,8 @@ class AccountBuilderTest {
 	@Test
 	void shouldCreateAccountObjectForDriverSuccessfully() {
 		UUID uuidForAccountId = UUID.randomUUID();
-		Account account = AccountBuilder.getInstance().accountId(uuidForAccountId).name(NAME).email(EMAIL).cpf(CPF)
-				.driver().carPlate(CAR_PLATE).build();
+		Account account = AccountBuilder.getInstance().accountId(uuidForAccountId.toString()).name(NAME).email(EMAIL)
+				.cpf(CPF).driver(true).carPlate(CAR_PLATE).build();
 		assertAccountInfo(uuidForAccountId, account);
 		assertDriver(account);
 	}
@@ -57,7 +58,8 @@ class AccountBuilderTest {
 	void shouldNotCreateAccountObjectForDriverWhenCarPlateNotProvided() {
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
 			UUID uuidForAccountId = UUID.randomUUID();
-			AccountBuilder.getInstance().accountId(uuidForAccountId).name(NAME).email(EMAIL).cpf(CPF).driver().build();
+			AccountBuilder.getInstance().accountId(uuidForAccountId.toString()).name(NAME).email(EMAIL).cpf(CPF)
+					.driver(true).build();
 		});
 		assertEquals(INVALID_CAR_PLATE_EXCEPTION_MESSAGE, exception.getMessage());
 	}

@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.fastride.domain.account.model.Account;
-import com.fastride.domain.account.model.AccountBuilder;
+import com.fastride.domain.account.model.Account.AccountBuilder;
 import com.fastride.domain.account.model.AccountRepository;
 import com.fastride.domain.shared.EntityId;
 
@@ -46,7 +46,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
 	private RowMapper<Account> accountRowMapper() {
 		return (resultSet, rowNumber) -> {
-			return AccountBuilder.getInstance().accountId(resultSet.getObject("account_id", UUID.class))
+			return AccountBuilder.getInstance().accountId(resultSet.getObject("account_id", UUID.class).toString())
 					.name(resultSet.getString("name")).email(resultSet.getString("email"))
 					.cpf(resultSet.getString("cpf")).carPlate(resultSet.getString("car_plate"))
 					.passenger(resultSet.getBoolean("is_passenger")).driver(resultSet.getBoolean("is_driver")).build();
