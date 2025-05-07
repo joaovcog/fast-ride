@@ -1,12 +1,13 @@
 package com.fastride.domain.account.usecase;
 
 import static com.fastride.domain.shared.EntityId.VALID_ID_PATTERN;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,11 @@ import com.fastride.domain.shared.EntityId;
 @ExtendWith(MockitoExtension.class)
 class SignUpUseCaseUnitTest {
 
+	private static final String ACCOUNT_NAME = "John Doe";
+	private static final String ACCOUNT_EMAIL = "john@example.com";
+	private static final String ACCOUNT_CPF = "32421438098";
+	private static final String DRIVER_ACCOUNT_CAR_PLATE = "ABC1234";
+
 	private SignUpUseCase signUpUseCase;
 	private GetAccountUseCase getAccountUseCase;
 
@@ -51,15 +57,20 @@ class SignUpUseCaseUnitTest {
 		this.signUpUseCase = new SignUpUseCase(this.accountRepositoryFake);
 		this.getAccountUseCase = new GetAccountUseCase(this.accountRepositoryFake);
 
-		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
+		Account account = AccountBuilder.getInstance().name(ACCOUNT_NAME).email(ACCOUNT_EMAIL).cpf(ACCOUNT_CPF)
 				.carPlate(null).passenger().build();
-		Account createdAccount = this.signUpUseCase.execute(account);
-		Account retrievedAccount = this.getAccountUseCase.execute(createdAccount.getAccountId());
+		EntityId accountId = this.signUpUseCase.execute(account);
+		Account retrievedAccount = this.getAccountUseCase.execute(accountId);
 
-		assertTrue(!Objects.isNull(createdAccount));
-		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
-		assertTrue(Pattern.matches(VALID_ID_PATTERN, createdAccount.getAccountId().toString()));
-		assertAccount(createdAccount, retrievedAccount);
+		assertTrue(!Objects.isNull(accountId));
+		assertTrue(Pattern.matches(VALID_ID_PATTERN, accountId.toString()));
+		assertEquals(accountId, retrievedAccount.getAccountId());
+		assertEquals(ACCOUNT_NAME, retrievedAccount.getName().getContent());
+		assertEquals(ACCOUNT_EMAIL, retrievedAccount.getEmail().getContent());
+		assertEquals(ACCOUNT_CPF, retrievedAccount.getCpf().getContent());
+		assertNull(retrievedAccount.getCarPlate());
+		assertTrue(retrievedAccount.isPassenger());
+		assertFalse(retrievedAccount.isDriver());
 	}
 
 	@Test
@@ -67,42 +78,35 @@ class SignUpUseCaseUnitTest {
 		this.signUpUseCase = new SignUpUseCase(this.accountRepositorySpy);
 		this.getAccountUseCase = new GetAccountUseCase(this.accountRepositorySpy);
 
-		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
+		Account account = AccountBuilder.getInstance().name(ACCOUNT_NAME).email(ACCOUNT_EMAIL).cpf(ACCOUNT_CPF)
 				.carPlate(null).passenger().build();
-		Account createdAccount = this.signUpUseCase.execute(account);
-		Account retrievedAccount = this.getAccountUseCase.execute(createdAccount.getAccountId());
+		EntityId accountId = this.signUpUseCase.execute(account);
+		Account retrievedAccount = this.getAccountUseCase.execute(accountId);
 
-		assertTrue(!Objects.isNull(createdAccount));
-		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
-		assertTrue(Pattern.matches(VALID_ID_PATTERN, createdAccount.getAccountId().toString()));
-		assertAccount(createdAccount, retrievedAccount);
+		assertTrue(!Objects.isNull(accountId));
+		assertTrue(Pattern.matches(VALID_ID_PATTERN, accountId.toString()));
+		assertEquals(accountId, retrievedAccount.getAccountId());
+		assertEquals(ACCOUNT_NAME, retrievedAccount.getName().getContent());
+		assertEquals(ACCOUNT_EMAIL, retrievedAccount.getEmail().getContent());
+		assertEquals(ACCOUNT_CPF, retrievedAccount.getCpf().getContent());
+		assertNull(retrievedAccount.getCarPlate());
+		assertTrue(retrievedAccount.isPassenger());
+		assertFalse(retrievedAccount.isDriver());
 		verify(this.accountRepositorySpy, times(1)).create(any(Account.class));
 		verify(this.accountRepositorySpy, times(1)).findById(any(EntityId.class));
 	}
 
 	@Test
-	void shouldSignUpDriverSuccessfullyWithMock() {
+	void shouldCreateAccountForDriverSuccessfullyWithMock() {
 		this.signUpUseCase = new SignUpUseCase(this.accountRepositoryMock);
-		Account account = AccountBuilder.getInstance().accountId(UUID.randomUUID()).name("John Doe")
-				.email("john@example.com").cpf("32421438098").carPlate("ABC1234").driver().build();
-		when(this.accountRepositoryMock.create(any(Account.class))).thenReturn(account);
+		Account account = AccountBuilder.getInstance().accountId(UUID.randomUUID()).name(ACCOUNT_NAME)
+				.email(ACCOUNT_EMAIL).cpf(ACCOUNT_CPF).carPlate(DRIVER_ACCOUNT_CAR_PLATE).driver().build();
 
-		Account createdAccount = this.signUpUseCase.execute(account);
+		EntityId accountId = this.signUpUseCase.execute(account);
 
-		assertTrue(!Objects.isNull(createdAccount));
-		assertTrue(!Objects.isNull(createdAccount.getAccountId()));
-		assertTrue(Pattern.matches(VALID_ID_PATTERN, createdAccount.getAccountId().toString()));
+		assertTrue(!Objects.isNull(accountId));
+		assertTrue(Pattern.matches(VALID_ID_PATTERN, accountId.toString()));
 		verify(this.accountRepositoryMock, times(1)).create(any(Account.class));
-	}
-
-	private void assertAccount(Account createdAccount, Account retrievedAccount) {
-		assertEquals(createdAccount.getAccountId(), retrievedAccount.getAccountId());
-		assertEquals(createdAccount.getName(), retrievedAccount.getName());
-		assertEquals(createdAccount.getEmail(), retrievedAccount.getEmail());
-		assertEquals(createdAccount.getCpf(), retrievedAccount.getCpf());
-		assertEquals(createdAccount.getCarPlate(), retrievedAccount.getCarPlate());
-		assertEquals(createdAccount.isPassenger(), retrievedAccount.isPassenger());
-		assertEquals(createdAccount.isDriver(), retrievedAccount.isDriver());
 	}
 
 	private class AccountRepositoryFakeImpl implements AccountRepository {
@@ -114,9 +118,8 @@ class SignUpUseCaseUnitTest {
 		}
 
 		@Override
-		public Account create(Account account) {
+		public void create(Account account) {
 			this.accounts.add(account);
-			return account;
 		}
 
 		@Override

@@ -1,13 +1,15 @@
 package com.fastride.infrastructure.api.account.v1;
 
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.regex.Pattern;
+
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -27,6 +29,8 @@ import com.fastride.IntegrationTest;
 @AutoConfigureMockMvc
 class AccountControllerTest {
 
+	private static final String VALID_ID_PATTERN = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
+
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -37,12 +41,10 @@ class AccountControllerTest {
 		ResultActions result = mockMvc
 				.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(inputJson));
 
-		result.andExpect(status().isCreated()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.accountId").isNotEmpty()).andExpect(jsonPath("$.name").value("John Doe"))
-				.andExpect(jsonPath("$.email").value("john.doe@example.com"))
-				.andExpect(jsonPath("$.cpf").value("136.803.160-97"))
-				.andExpect(jsonPath("$.carPlate").value(nullValue())).andExpect(jsonPath("$.passenger").value("true"))
-				.andExpect(jsonPath("$.driver").value("false"));
+		String responseContent = result.andReturn().getResponse().getContentAsString();
+		result.andExpect(status().isCreated()).andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+				.andExpect(content().string(Matchers.not(Matchers.emptyString())));
+		assertTrue(Pattern.matches(VALID_ID_PATTERN, responseContent));
 	}
 
 	@Test
@@ -51,12 +53,10 @@ class AccountControllerTest {
 
 		ResultActions result = mockMvc
 				.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON).content(inputJson));
-
-		result.andExpect(status().isCreated()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.accountId").isNotEmpty()).andExpect(jsonPath("$.name").value("John Doe"))
-				.andExpect(jsonPath("$.email").value("john.doe@example.com"))
-				.andExpect(jsonPath("$.cpf").value("136.803.160-97")).andExpect(jsonPath("$.carPlate").value("ABC1234"))
-				.andExpect(jsonPath("$.passenger").value("false")).andExpect(jsonPath("$.driver").value("true"));
+		String responseContent = result.andReturn().getResponse().getContentAsString();
+		result.andExpect(status().isCreated()).andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+				.andExpect(content().string(Matchers.not(Matchers.emptyString())));
+		assertTrue(Pattern.matches(VALID_ID_PATTERN, responseContent));
 	}
 
 	@ParameterizedTest

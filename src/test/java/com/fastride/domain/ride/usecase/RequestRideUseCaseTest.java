@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.fastride.IntegrationTest;
 import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.AccountBuilder;
+import com.fastride.domain.account.usecase.GetAccountUseCase;
 import com.fastride.domain.account.usecase.SignUpUseCase;
 import com.fastride.domain.ride.model.Position;
 import com.fastride.domain.ride.model.Ride;
@@ -31,11 +32,15 @@ class RequestRideUseCaseTest {
 	@Autowired
 	private SignUpUseCase signUpUseCase;
 
+	@Autowired
+	private GetAccountUseCase getAccountUseCase;
+
 	@Test
 	void shouldRequestARideForThePassengerSuccessfully() {
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
 				.passenger().build();
-		Account createdAccount = this.signUpUseCase.execute(account);
+		EntityId accountId = this.signUpUseCase.execute(account);
+		Account createdAccount = this.getAccountUseCase.execute(accountId);
 
 		Ride ride = this.requestRideUseCase.execute(createdAccount.getAccountId(), getStart(), getDestination());
 		ride = this.getRideUseCase.execute(ride.getRideId());
@@ -64,7 +69,8 @@ class RequestRideUseCaseTest {
 	void shouldNotRequestARideForDriverAccount() {
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
 				.driver().carPlate("AAA1234").build();
-		Account createdAccount = this.signUpUseCase.execute(account);
+		EntityId accountId = this.signUpUseCase.execute(account);
+		Account createdAccount = this.getAccountUseCase.execute(accountId);
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
 			this.requestRideUseCase.execute(createdAccount.getAccountId(), getStart(), getDestination());
@@ -77,7 +83,8 @@ class RequestRideUseCaseTest {
 	void shouldNotRequestARideWhenPassengerHasAnExistingRequestedRide() {
 		Account account = AccountBuilder.getInstance().name("John Doe").email("john@example.com").cpf("32421438098")
 				.passenger().build();
-		Account createdAccount = this.signUpUseCase.execute(account);
+		EntityId accountId = this.signUpUseCase.execute(account);
+		Account createdAccount = this.getAccountUseCase.execute(accountId);
 
 		this.requestRideUseCase.execute(createdAccount.getAccountId(), getStart(), getDestination());
 

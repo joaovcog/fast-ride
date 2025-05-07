@@ -6,7 +6,7 @@ import com.fastride.domain.shared.EntityId;
 
 public interface AccountRepository {
 
-	Account create(Account account);
+	void create(Account account);
 
 	Optional<Account> findById(EntityId accountId);
 
