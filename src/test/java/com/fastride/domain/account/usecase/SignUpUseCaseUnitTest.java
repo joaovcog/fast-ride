@@ -57,17 +57,17 @@ class SignUpUseCaseUnitTest {
 
 		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, null, true, false);
 		EntityId accountId = this.signUpUseCase.execute(signUpInput);
-		Account retrievedAccount = this.getAccountUseCase.execute(accountId);
+		GetAccountOutput retrievedAccount = this.getAccountUseCase.execute(accountId.toString());
 
 		assertTrue(!Objects.isNull(accountId));
 		assertTrue(Pattern.matches(VALID_ID_PATTERN, accountId.toString()));
-		assertEquals(accountId, retrievedAccount.getAccountId());
-		assertEquals(ACCOUNT_NAME, retrievedAccount.getName().getContent());
-		assertEquals(ACCOUNT_EMAIL, retrievedAccount.getEmail().getContent());
-		assertEquals(ACCOUNT_CPF, retrievedAccount.getCpf().getContent());
-		assertNull(retrievedAccount.getCarPlate());
-		assertTrue(retrievedAccount.isPassenger());
-		assertFalse(retrievedAccount.isDriver());
+		assertEquals(accountId.toString(), retrievedAccount.accountId());
+		assertEquals(ACCOUNT_NAME, retrievedAccount.name());
+		assertEquals(ACCOUNT_EMAIL, retrievedAccount.email());
+		assertEquals(ACCOUNT_CPF, retrievedAccount.cpf());
+		assertNull(retrievedAccount.carPlate());
+		assertTrue(retrievedAccount.passenger());
+		assertFalse(retrievedAccount.driver());
 	}
 
 	@Test
@@ -77,17 +77,17 @@ class SignUpUseCaseUnitTest {
 
 		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, null, true, false);
 		EntityId accountId = this.signUpUseCase.execute(signUpInput);
-		Account retrievedAccount = this.getAccountUseCase.execute(accountId);
+		GetAccountOutput retrievedAccount = this.getAccountUseCase.execute(accountId.toString());
 
 		assertTrue(!Objects.isNull(accountId));
 		assertTrue(Pattern.matches(VALID_ID_PATTERN, accountId.toString()));
-		assertEquals(accountId, retrievedAccount.getAccountId());
-		assertEquals(ACCOUNT_NAME, retrievedAccount.getName().getContent());
-		assertEquals(ACCOUNT_EMAIL, retrievedAccount.getEmail().getContent());
-		assertEquals(ACCOUNT_CPF, retrievedAccount.getCpf().getContent());
-		assertNull(retrievedAccount.getCarPlate());
-		assertTrue(retrievedAccount.isPassenger());
-		assertFalse(retrievedAccount.isDriver());
+		assertEquals(accountId.toString(), retrievedAccount.accountId());
+		assertEquals(ACCOUNT_NAME, retrievedAccount.name());
+		assertEquals(ACCOUNT_EMAIL, retrievedAccount.email());
+		assertEquals(ACCOUNT_CPF, retrievedAccount.cpf());
+		assertNull(retrievedAccount.carPlate());
+		assertTrue(retrievedAccount.passenger());
+		assertFalse(retrievedAccount.driver());
 		verify(this.accountRepositorySpy, times(1)).create(any(Account.class));
 		verify(this.accountRepositorySpy, times(1)).findById(any(EntityId.class));
 	}

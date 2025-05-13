@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fastride.IntegrationTest;
-import com.fastride.domain.account.model.Account;
+import com.fastride.domain.account.usecase.GetAccountOutput;
 import com.fastride.domain.account.usecase.GetAccountUseCase;
 import com.fastride.domain.account.usecase.SignUpInput;
 import com.fastride.domain.account.usecase.SignUpUseCase;
@@ -44,14 +44,15 @@ class RequestRideUseCaseTest {
 	void shouldRequestARideForThePassengerSuccessfully() {
 		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, null, true, false);
 		EntityId accountId = this.signUpUseCase.execute(signUpInput);
-		Account createdAccount = this.getAccountUseCase.execute(accountId);
+		GetAccountOutput createdAccount = this.getAccountUseCase.execute(accountId.toString());
 
-		Ride ride = this.requestRideUseCase.execute(createdAccount.getAccountId(), getStart(), getDestination());
+		Ride ride = this.requestRideUseCase.execute(new EntityId(createdAccount.accountId()), getStart(),
+				getDestination());
 		ride = this.getRideUseCase.execute(ride.getRideId());
 
 		assertNotNull(ride);
 		assertNotNull(ride.getRideId());
-		assertEquals(createdAccount.getAccountId(), ride.getPassenger().getAccountId());
+		assertEquals(createdAccount.accountId(), ride.getPassenger().getAccountId().toString());
 		assertEquals(getStart(), ride.getStart());
 		assertEquals(getDestination(), ride.getDestination());
 		assertNotNull(ride.getDate());
@@ -74,10 +75,10 @@ class RequestRideUseCaseTest {
 		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, DRIVER_ACCOUNT_CAR_PLATE,
 				false, true);
 		EntityId accountId = this.signUpUseCase.execute(signUpInput);
-		Account createdAccount = this.getAccountUseCase.execute(accountId);
+		GetAccountOutput createdAccount = this.getAccountUseCase.execute(accountId.toString());
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.requestRideUseCase.execute(createdAccount.getAccountId(), getStart(), getDestination());
+			this.requestRideUseCase.execute(new EntityId(createdAccount.accountId()), getStart(), getDestination());
 		});
 
 		assertEquals("The account type is not passenger. Please, check the account data.", exception.getMessage());
@@ -87,12 +88,12 @@ class RequestRideUseCaseTest {
 	void shouldNotRequestARideWhenPassengerHasAnExistingRequestedRide() {
 		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, null, true, false);
 		EntityId accountId = this.signUpUseCase.execute(signUpInput);
-		Account createdAccount = this.getAccountUseCase.execute(accountId);
+		GetAccountOutput createdAccount = this.getAccountUseCase.execute(accountId.toString());
 
-		this.requestRideUseCase.execute(createdAccount.getAccountId(), getStart(), getDestination());
+		this.requestRideUseCase.execute(new EntityId(createdAccount.accountId()), getStart(), getDestination());
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.requestRideUseCase.execute(createdAccount.getAccountId(), getStart(), getDestination());
+			this.requestRideUseCase.execute(new EntityId(createdAccount.accountId()), getStart(), getDestination());
 		});
 
 		assertEquals(

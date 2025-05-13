@@ -69,7 +69,7 @@ public class Account {
 	}
 
 	public String getCarPlateContent() {
-		if (Objects.isNull(carPlate)) {
+		if (this.isPassenger()) {
 			return null;
 		}
 		return carPlate.getContent();
