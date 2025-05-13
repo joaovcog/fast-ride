@@ -6,7 +6,7 @@ import com.fastride.domain.shared.EntityId;
 
 public interface RideRepository {
 
-	Ride create(Ride ride);
+	void create(Ride ride);
 
 	boolean hasRequestedRideByAccountId(EntityId accountId);
 

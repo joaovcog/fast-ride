@@ -40,6 +40,9 @@ class RequestRideUseCaseUnitTest {
 	private static final String ACCOUNT_NOT_FOUND_EXCEPTION_MESSAGE = "The account ID provided is invalid. Please, enter a valid one.";
 	private static final String INVALID_PASSENGER_ACCOUNT_EXCEPTION_MESSAGE = "The account type is not passenger. Please, check the account data.";
 
+	private static final BigDecimal START_LAT_LONG = new BigDecimal("1.0");
+	private static final BigDecimal DESTINATION_LAT_LONG = new BigDecimal("2.0");
+
 	private RequestRideUseCase requestRideUseCase;
 
 	@Mock
@@ -63,14 +66,16 @@ class RequestRideUseCaseUnitTest {
 		when(this.accountRepository.findById(passengerId)).thenReturn(Optional.of(passengerAccount));
 		when(this.rideRepository.hasRequestedRideByAccountId(passengerId)).thenReturn(false);
 
-		this.requestRideUseCase.execute(passengerId, getStart(), getDestination());
+		RequestRideInput requestRideInput = new RequestRideInput(passengerId.toString(), START_LAT_LONG, START_LAT_LONG,
+				DESTINATION_LAT_LONG, DESTINATION_LAT_LONG);
+		this.requestRideUseCase.execute(requestRideInput);
 		verify(rideRepository).create(rideCaptor.capture());
 		Ride ride = rideCaptor.getValue();
 		assertNotNull(ride);
 		assertNotNull(ride.getRideId());
 		assertEquals(passengerId, ride.getPassenger().getAccountId());
-		assertEquals(getStart(), ride.getStart());
-		assertEquals(getDestination(), ride.getDestination());
+		assertEquals(new Position(START_LAT_LONG, START_LAT_LONG), ride.getStart());
+		assertEquals(new Position(DESTINATION_LAT_LONG, DESTINATION_LAT_LONG), ride.getDestination());
 		assertNotNull(ride.getDate());
 		assertEquals(RideStatus.REQUESTED, ride.getStatus());
 	}
@@ -80,9 +85,11 @@ class RequestRideUseCaseUnitTest {
 	void shouldNotRequestARideWhenAccountNotFoundForProvidedIdOrAccountNotFlaggedAsPassenger(
 			InvalidAccountScenarioWrapper invalidAccountScenario) {
 		when(accountRepository.findById(any(EntityId.class))).thenReturn(invalidAccountScenario.getAccountForInput());
+		RequestRideInput requestRideInput = new RequestRideInput(new EntityId().toString(), START_LAT_LONG,
+				START_LAT_LONG, DESTINATION_LAT_LONG, DESTINATION_LAT_LONG);
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.requestRideUseCase.execute(new EntityId(), getStart(), getDestination());
+			this.requestRideUseCase.execute(requestRideInput);
 		});
 
 		assertEquals(invalidAccountScenario.getExpectedExceptionMessage(), exception.getMessage());
@@ -95,23 +102,17 @@ class RequestRideUseCaseUnitTest {
 		EntityId accountId = account.getAccountId();
 		when(this.accountRepository.findById(accountId)).thenReturn(Optional.of(account));
 		when(this.rideRepository.hasRequestedRideByAccountId(accountId)).thenReturn(true);
+		RequestRideInput requestRideInput = new RequestRideInput(accountId.toString(), START_LAT_LONG, START_LAT_LONG,
+				DESTINATION_LAT_LONG, DESTINATION_LAT_LONG);
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.requestRideUseCase.execute(accountId, getStart(), getDestination());
+			this.requestRideUseCase.execute(requestRideInput);
 		});
 
 		assertEquals(
 				"A ride has already been requested for the passenger. You must complete or cancel the existing ride before requesting another one.",
 				exception.getMessage());
 		verify(this.rideRepository, never()).create(any(Ride.class));
-	}
-
-	private Position getStart() {
-		return new Position(new BigDecimal("1.0"), new BigDecimal("1.0"));
-	}
-
-	private Position getDestination() {
-		return new Position(new BigDecimal("2.0"), new BigDecimal("2.0"));
 	}
 
 	private Account getValidPassengerAccount() {

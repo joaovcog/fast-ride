@@ -27,6 +27,8 @@ class RequestRideUseCaseTest {
 	private static final String ACCOUNT_EMAIL = "john@example.com";
 	private static final String ACCOUNT_CPF = "32421438098";
 	private static final String DRIVER_ACCOUNT_CAR_PLATE = "ABC1234";
+	private static final BigDecimal START_LAT_LONG = new BigDecimal("1.0");
+	private static final BigDecimal DESTINATION_LAT_LONG = new BigDecimal("2.0");
 
 	@Autowired
 	private RequestRideUseCase requestRideUseCase;
@@ -46,15 +48,16 @@ class RequestRideUseCaseTest {
 		EntityId accountId = this.signUpUseCase.execute(signUpInput);
 		GetAccountOutput createdAccount = this.getAccountUseCase.execute(accountId.toString());
 
-		Ride ride = this.requestRideUseCase.execute(new EntityId(createdAccount.accountId()), getStart(),
-				getDestination());
-		ride = this.getRideUseCase.execute(ride.getRideId());
+		RequestRideInput requestRideInput = new RequestRideInput(createdAccount.accountId(), START_LAT_LONG,
+				START_LAT_LONG, DESTINATION_LAT_LONG, DESTINATION_LAT_LONG);
+		EntityId rideId = this.requestRideUseCase.execute(requestRideInput);
+		Ride ride = this.getRideUseCase.execute(rideId);
 
 		assertNotNull(ride);
 		assertNotNull(ride.getRideId());
 		assertEquals(createdAccount.accountId(), ride.getPassenger().getAccountId().toString());
-		assertEquals(getStart(), ride.getStart());
-		assertEquals(getDestination(), ride.getDestination());
+		assertEquals(new Position(START_LAT_LONG, START_LAT_LONG), ride.getStart());
+		assertEquals(new Position(DESTINATION_LAT_LONG, DESTINATION_LAT_LONG), ride.getDestination());
 		assertNotNull(ride.getDate());
 		assertEquals(RideStatus.REQUESTED, ride.getStatus());
 	}
@@ -62,9 +65,11 @@ class RequestRideUseCaseTest {
 	@Test
 	void shouldNotRequestARideWhenPassengerNotFound() {
 		EntityId invalidPassengerId = new EntityId();
+		RequestRideInput requestRideInput = new RequestRideInput(invalidPassengerId.toString(), START_LAT_LONG,
+				START_LAT_LONG, DESTINATION_LAT_LONG, DESTINATION_LAT_LONG);
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.requestRideUseCase.execute(invalidPassengerId, getStart(), getDestination());
+			this.requestRideUseCase.execute(requestRideInput);
 		});
 
 		assertEquals("The account ID provided is invalid. Please, enter a valid one.", exception.getMessage());
@@ -76,9 +81,11 @@ class RequestRideUseCaseTest {
 				false, true);
 		EntityId accountId = this.signUpUseCase.execute(signUpInput);
 		GetAccountOutput createdAccount = this.getAccountUseCase.execute(accountId.toString());
+		RequestRideInput requestRideInput = new RequestRideInput(createdAccount.accountId(), START_LAT_LONG,
+				START_LAT_LONG, DESTINATION_LAT_LONG, DESTINATION_LAT_LONG);
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.requestRideUseCase.execute(new EntityId(createdAccount.accountId()), getStart(), getDestination());
+			this.requestRideUseCase.execute(requestRideInput);
 		});
 
 		assertEquals("The account type is not passenger. Please, check the account data.", exception.getMessage());
@@ -89,24 +96,18 @@ class RequestRideUseCaseTest {
 		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, null, true, false);
 		EntityId accountId = this.signUpUseCase.execute(signUpInput);
 		GetAccountOutput createdAccount = this.getAccountUseCase.execute(accountId.toString());
+		RequestRideInput requestRideInput = new RequestRideInput(createdAccount.accountId(), START_LAT_LONG,
+				START_LAT_LONG, DESTINATION_LAT_LONG, DESTINATION_LAT_LONG);
 
-		this.requestRideUseCase.execute(new EntityId(createdAccount.accountId()), getStart(), getDestination());
+		this.requestRideUseCase.execute(requestRideInput);
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			this.requestRideUseCase.execute(new EntityId(createdAccount.accountId()), getStart(), getDestination());
+			this.requestRideUseCase.execute(requestRideInput);
 		});
 
 		assertEquals(
 				"A ride has already been requested for the passenger. You must complete or cancel the existing ride before requesting another one.",
 				exception.getMessage());
-	}
-
-	private Position getStart() {
-		return new Position(new BigDecimal("1.0"), new BigDecimal("1.0"));
-	}
-
-	private Position getDestination() {
-		return new Position(new BigDecimal("2.0"), new BigDecimal("2.0"));
 	}
 
 }
