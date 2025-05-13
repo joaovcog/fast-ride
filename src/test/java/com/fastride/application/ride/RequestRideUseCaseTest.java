@@ -1,4 +1,4 @@
-package com.fastride.domain.ride.usecase;
+package com.fastride.application.ride;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,10 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fastride.IntegrationTest;
-import com.fastride.domain.account.usecase.GetAccountOutput;
-import com.fastride.domain.account.usecase.GetAccountUseCase;
-import com.fastride.domain.account.usecase.SignUpInput;
-import com.fastride.domain.account.usecase.SignUpUseCase;
+import com.fastride.application.account.GetAccountOutput;
+import com.fastride.application.account.GetAccountUseCase;
+import com.fastride.application.account.SignUpInput;
+import com.fastride.application.account.SignUpUseCase;
+import com.fastride.application.ride.GetRideOutput;
+import com.fastride.application.ride.GetRideUseCase;
+import com.fastride.application.ride.RequestRideInput;
+import com.fastride.application.ride.RequestRideUseCase;
 import com.fastride.domain.ride.model.RideStatus;
 import com.fastride.domain.shared.EntityId;
 import com.fastride.domain.shared.ValidationException;

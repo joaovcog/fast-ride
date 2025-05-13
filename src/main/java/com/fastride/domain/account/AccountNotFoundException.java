@@ -1,4 +1,4 @@
-package com.fastride.domain.account.exception;
+package com.fastride.domain.account;
 
 import com.fastride.domain.shared.ResourceNotFoundException;
 

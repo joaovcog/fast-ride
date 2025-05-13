@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fastride.domain.account.usecase.GetAccountOutput;
-import com.fastride.domain.account.usecase.GetAccountUseCase;
-import com.fastride.domain.account.usecase.SignUpInput;
-import com.fastride.domain.account.usecase.SignUpUseCase;
+import com.fastride.application.account.GetAccountOutput;
+import com.fastride.application.account.GetAccountUseCase;
+import com.fastride.application.account.SignUpInput;
+import com.fastride.application.account.SignUpUseCase;
 
 import jakarta.validation.Valid;
 
