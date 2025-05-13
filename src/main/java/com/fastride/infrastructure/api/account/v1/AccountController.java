@@ -22,13 +22,10 @@ public class AccountController {
 
 	private SignUpUseCase signUpUseCase;
 	private GetAccountUseCase getAccountUseCase;
-	private AccountConverter accountConverter;
 
-	public AccountController(SignUpUseCase signUpUseCase, GetAccountUseCase getAccountUseCase,
-			AccountConverter accountConverter) {
+	public AccountController(SignUpUseCase signUpUseCase, GetAccountUseCase getAccountUseCase) {
 		this.signUpUseCase = signUpUseCase;
 		this.getAccountUseCase = getAccountUseCase;
-		this.accountConverter = accountConverter;
 	}
 
 	@PostMapping
