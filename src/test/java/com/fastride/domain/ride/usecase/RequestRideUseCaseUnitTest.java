@@ -73,7 +73,7 @@ class RequestRideUseCaseUnitTest {
 		Ride ride = rideCaptor.getValue();
 		assertNotNull(ride);
 		assertNotNull(ride.getRideId());
-		assertEquals(passengerId, ride.getPassenger().getAccountId());
+		assertEquals(passengerId, ride.getPassengerId());
 		assertEquals(new Position(START_LAT_LONG, START_LAT_LONG), ride.getStart());
 		assertEquals(new Position(DESTINATION_LAT_LONG, DESTINATION_LAT_LONG), ride.getDestination());
 		assertNotNull(ride.getDate());
