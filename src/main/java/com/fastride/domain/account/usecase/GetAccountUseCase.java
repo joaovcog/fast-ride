@@ -16,11 +16,12 @@ public class GetAccountUseCase {
 		this.accountRepository = accountRepository;
 	}
 
-	public Account execute(EntityId accountId) {
-		// TODO: return an output dto with Account information instead of exposing the
-		// whole entity
-		return this.accountRepository.findById(accountId).orElseThrow(
+	public GetAccountOutput execute(String accountId) {
+		Account account = this.accountRepository.findById(new EntityId(accountId)).orElseThrow(
 				() -> new AccountNotFoundException(String.format("No account found for ID: %s", accountId)));
+		return new GetAccountOutput(account.getAccountId().toString(), account.getName().getContent(),
+				account.getEmail().getContent(), account.getCpf().getContent(), account.getCarPlateContent(),
+				account.isPassenger(), account.isDriver());
 	}
 
 }

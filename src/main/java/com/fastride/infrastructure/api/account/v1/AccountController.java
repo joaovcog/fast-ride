@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fastride.domain.account.usecase.GetAccountOutput;
 import com.fastride.domain.account.usecase.GetAccountUseCase;
 import com.fastride.domain.account.usecase.SignUpInput;
 import com.fastride.domain.account.usecase.SignUpUseCase;
-import com.fastride.domain.shared.EntityId;
 
 import jakarta.validation.Valid;
 
@@ -22,13 +22,10 @@ public class AccountController {
 
 	private SignUpUseCase signUpUseCase;
 	private GetAccountUseCase getAccountUseCase;
-	private AccountConverter accountConverter;
 
-	public AccountController(SignUpUseCase signUpUseCase, GetAccountUseCase getAccountUseCase,
-			AccountConverter accountConverter) {
+	public AccountController(SignUpUseCase signUpUseCase, GetAccountUseCase getAccountUseCase) {
 		this.signUpUseCase = signUpUseCase;
 		this.getAccountUseCase = getAccountUseCase;
-		this.accountConverter = accountConverter;
 	}
 
 	@PostMapping
@@ -42,8 +39,8 @@ public class AccountController {
 
 	@GetMapping("/{accountId}")
 	@ResponseStatus(HttpStatus.OK)
-	public AccountOutputDto getAccountById(@PathVariable String accountId) {
-		return this.accountConverter.toOutputDto(this.getAccountUseCase.execute(new EntityId(accountId)));
+	public GetAccountOutput getAccountById(@PathVariable String accountId) {
+		return this.getAccountUseCase.execute(accountId);
 	}
 
 }

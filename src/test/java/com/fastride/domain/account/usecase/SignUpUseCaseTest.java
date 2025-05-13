@@ -17,7 +17,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fastride.IntegrationTest;
-import com.fastride.domain.account.model.Account;
 import com.fastride.domain.shared.EntityId;
 import com.fastride.domain.shared.ValidationException;
 
@@ -39,17 +38,17 @@ class SignUpUseCaseTest {
 	void shouldSignUpPassengerSuccessfully() {
 		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, null, true, false);
 		EntityId accountId = this.signUpUseCase.execute(signUpInput);
-		Account retrievedAccount = this.getAccountUseCase.execute(accountId);
+		GetAccountOutput retrievedAccount = this.getAccountUseCase.execute(accountId.toString());
 
 		assertTrue(!Objects.isNull(accountId));
 		assertTrue(Pattern.matches(VALID_ID_PATTERN, accountId.toString()));
-		assertEquals(accountId, retrievedAccount.getAccountId());
-		assertEquals(ACCOUNT_NAME, retrievedAccount.getName().getContent());
-		assertEquals(ACCOUNT_EMAIL, retrievedAccount.getEmail().getContent());
-		assertEquals(ACCOUNT_CPF, retrievedAccount.getCpf().getContent());
-		assertNull(retrievedAccount.getCarPlate());
-		assertTrue(retrievedAccount.isPassenger());
-		assertFalse(retrievedAccount.isDriver());
+		assertEquals(accountId.toString(), retrievedAccount.accountId());
+		assertEquals(ACCOUNT_NAME, retrievedAccount.name());
+		assertEquals(ACCOUNT_EMAIL, retrievedAccount.email());
+		assertEquals(ACCOUNT_CPF, retrievedAccount.cpf());
+		assertNull(retrievedAccount.carPlate());
+		assertTrue(retrievedAccount.passenger());
+		assertFalse(retrievedAccount.driver());
 	}
 
 	@Test
@@ -57,17 +56,17 @@ class SignUpUseCaseTest {
 		SignUpInput signUpInput = new SignUpInput(ACCOUNT_NAME, ACCOUNT_EMAIL, ACCOUNT_CPF, DRIVER_ACCOUNT_CAR_PLATE,
 				false, true);
 		EntityId accountId = this.signUpUseCase.execute(signUpInput);
-		Account retrievedAccount = this.getAccountUseCase.execute(accountId);
+		GetAccountOutput retrievedAccount = this.getAccountUseCase.execute(accountId.toString());
 
 		assertTrue(!Objects.isNull(accountId));
 		assertTrue(Pattern.matches(VALID_ID_PATTERN, accountId.toString()));
-		assertEquals(accountId, retrievedAccount.getAccountId());
-		assertEquals(ACCOUNT_NAME, retrievedAccount.getName().getContent());
-		assertEquals(ACCOUNT_EMAIL, retrievedAccount.getEmail().getContent());
-		assertEquals(ACCOUNT_CPF, retrievedAccount.getCpf().getContent());
-		assertEquals(DRIVER_ACCOUNT_CAR_PLATE, retrievedAccount.getCarPlate().getContent());
-		assertFalse(retrievedAccount.isPassenger());
-		assertTrue(retrievedAccount.isDriver());
+		assertEquals(accountId.toString(), retrievedAccount.accountId());
+		assertEquals(ACCOUNT_NAME, retrievedAccount.name());
+		assertEquals(ACCOUNT_EMAIL, retrievedAccount.email());
+		assertEquals(ACCOUNT_CPF, retrievedAccount.cpf());
+		assertEquals(DRIVER_ACCOUNT_CAR_PLATE, retrievedAccount.carPlate());
+		assertFalse(retrievedAccount.passenger());
+		assertTrue(retrievedAccount.driver());
 	}
 
 	@Test
