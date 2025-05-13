@@ -77,10 +77,9 @@ class RideControllerTest {
 		result.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.rideId").value(rideId.toString()))
 				.andExpect(jsonPath("$.passengerId").value(accountId.toString()))
-				// TODO: complete test assertion after refactoring RequestRideUseCase
-//				.andExpect(jsonPath("$.passengerName").value(createdAccount.getName().getContent()))
+				.andExpect(jsonPath("$.passengerName").value("John Doe"))
 				.andExpect(jsonPath("$.driverId").value((Object) null))
-//				.andExpect(jsonPath("$.driverName").value((Object) null))
+				.andExpect(jsonPath("$.driverName").value((Object) null))
 				.andExpect(jsonPath("$.fare").value((Object) null))
 				.andExpect(jsonPath("$.distance").value((Object) null))
 				.andExpect(jsonPath("$.startLatitude").value(requestRideInput.startLatitude()))
