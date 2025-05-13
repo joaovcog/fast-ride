@@ -29,13 +29,12 @@ public class RideRepositoryImpl implements RideRepository {
 	}
 
 	@Override
-	public Ride create(Ride ride) {
+	public void create(Ride ride) {
 		String insertQuery = "INSERT INTO fast_ride.ride (ride_id, passenger_id, status, start_latitude, start_longitude, destination_latitude, destination_longitude, date) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		this.jdbcTemplate.update(insertQuery, ride.getRideId().toUUID(), ride.getPassenger().getAccountId().toUUID(),
 				ride.getStatus().name(), ride.getStart().latitude(), ride.getStart().longitude(),
 				ride.getDestination().latitude(), ride.getDestination().longitude(), ride.getDate());
-		return ride;
 	}
 
 	@Override

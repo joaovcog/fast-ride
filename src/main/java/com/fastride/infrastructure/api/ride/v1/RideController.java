@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fastride.domain.ride.model.Position;
 import com.fastride.domain.ride.model.Ride;
 import com.fastride.domain.ride.usecase.GetRideUseCase;
+import com.fastride.domain.ride.usecase.RequestRideInput;
 import com.fastride.domain.ride.usecase.RequestRideUseCase;
 import com.fastride.domain.shared.EntityId;
 
@@ -31,11 +31,11 @@ public class RideController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public RideSummaryOutputDto requestRide(@RequestBody @Valid RideInputDto rideInput) {
-		Position start = new Position(rideInput.startLatitude(), rideInput.startLongitude());
-		Position destination = new Position(rideInput.destinationLatitude(), rideInput.destinationLongitude());
-		Ride ride = this.requestRideUseCase.execute(new EntityId(rideInput.passengerId()), start, destination);
-		return new RideSummaryOutputDto(ride.getRideId().toString(), ride.getStatus().name());
+	public String requestRide(@RequestBody @Valid RequestRideRequest requestRideRequest) {
+		RequestRideInput requestRideInput = new RequestRideInput(requestRideRequest.passengerId(),
+				requestRideRequest.startLatitude(), requestRideRequest.startLongitude(),
+				requestRideRequest.destinationLatitude(), requestRideRequest.destinationLongitude());
+		return this.requestRideUseCase.execute(requestRideInput).toString();
 	}
 
 	@GetMapping("/{rideId}")

@@ -137,12 +137,6 @@ public class Ride {
 			return this;
 		}
 
-		public RideBuilder start(Position start) {
-			this.startLatitude = start.latitude();
-			this.startLongitude = start.longitude();
-			return this;
-		}
-
 		public RideBuilder destinationLatitude(BigDecimal destinationLatitude) {
 			this.destinationLatitude = destinationLatitude;
 			return this;
@@ -150,12 +144,6 @@ public class Ride {
 
 		public RideBuilder destinationLongitude(BigDecimal destinationLongitude) {
 			this.destinationLongitude = destinationLongitude;
-			return this;
-		}
-
-		public RideBuilder destination(Position destination) {
-			this.destinationLatitude = destination.latitude();
-			this.destinationLongitude = destination.longitude();
 			return this;
 		}
 

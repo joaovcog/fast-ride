@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.AccountRepository;
-import com.fastride.domain.ride.model.Position;
 import com.fastride.domain.ride.model.Ride;
 import com.fastride.domain.ride.model.Ride.RideBuilder;
 import com.fastride.domain.ride.model.RideRepository;
@@ -24,7 +23,8 @@ public class RequestRideUseCase {
 		this.rideRepository = rideRepository;
 	}
 
-	public Ride execute(EntityId passengerId, Position start, Position destination) {
+	public EntityId execute(RequestRideInput requestRideInput) {
+		EntityId passengerId = new EntityId(requestRideInput.passengerId());
 		Optional<Account> account = this.accountRepository.findById(passengerId);
 		if (account.isEmpty())
 			throw new ValidationException("The account ID provided is invalid. Please, enter a valid one.");
@@ -33,9 +33,12 @@ public class RequestRideUseCase {
 		if (this.rideRepository.hasRequestedRideByAccountId(passengerId))
 			throw new ValidationException(
 					"A ride has already been requested for the passenger. You must complete or cancel the existing ride before requesting another one.");
-		Ride ride = RideBuilder.getInstance().request().passenger(account.get()).start(start).destination(destination)
-				.build();
-		return this.rideRepository.create(ride);
+		Ride ride = RideBuilder.getInstance().request().passenger(account.get())
+				.startLatitude(requestRideInput.startLatitude()).startLongitude(requestRideInput.startLongitude())
+				.destinationLatitude(requestRideInput.destinationLatitude())
+				.destinationLongitude(requestRideInput.destinationLongitude()).build();
+		this.rideRepository.create(ride);
+		return ride.getRideId();
 	}
 
 }
