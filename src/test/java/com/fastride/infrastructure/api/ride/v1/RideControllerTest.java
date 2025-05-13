@@ -20,10 +20,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fastride.IntegrationTest;
-import com.fastride.domain.account.usecase.SignUpInput;
-import com.fastride.domain.account.usecase.SignUpUseCase;
-import com.fastride.domain.ride.usecase.RequestRideInput;
-import com.fastride.domain.ride.usecase.RequestRideUseCase;
+import com.fastride.application.account.SignUpInput;
+import com.fastride.application.account.SignUpUseCase;
+import com.fastride.application.ride.RequestRideInput;
+import com.fastride.application.ride.RequestRideUseCase;
 import com.fastride.domain.shared.EntityId;
 
 @IntegrationTest

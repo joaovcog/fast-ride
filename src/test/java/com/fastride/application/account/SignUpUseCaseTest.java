@@ -1,4 +1,4 @@
-package com.fastride.domain.account.usecase;
+package com.fastride.application.account;
 
 import static com.fastride.domain.shared.EntityId.VALID_ID_PATTERN;
 import static org.junit.Assert.assertNull;
@@ -17,6 +17,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fastride.IntegrationTest;
+import com.fastride.application.account.GetAccountOutput;
+import com.fastride.application.account.GetAccountUseCase;
+import com.fastride.application.account.SignUpInput;
+import com.fastride.application.account.SignUpUseCase;
 import com.fastride.domain.shared.EntityId;
 import com.fastride.domain.shared.ValidationException;
 

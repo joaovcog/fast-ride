@@ -1,4 +1,4 @@
-package com.fastride.domain.ride.usecase;
+package com.fastride.application.ride;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,6 +24,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.fastride.application.ride.RequestRideInput;
+import com.fastride.application.ride.RequestRideUseCase;
 import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.Account.AccountBuilder;
 import com.fastride.domain.account.model.AccountRepository;

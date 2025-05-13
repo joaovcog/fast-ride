@@ -1,4 +1,4 @@
-package com.fastride.domain.account.usecase;
+package com.fastride.application.account;
 
 import static com.fastride.domain.shared.EntityId.VALID_ID_PATTERN;
 import static org.junit.Assert.assertNull;
@@ -22,6 +22,10 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.fastride.application.account.GetAccountOutput;
+import com.fastride.application.account.GetAccountUseCase;
+import com.fastride.application.account.SignUpInput;
+import com.fastride.application.account.SignUpUseCase;
 import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.AccountRepository;
 import com.fastride.domain.shared.EntityId;

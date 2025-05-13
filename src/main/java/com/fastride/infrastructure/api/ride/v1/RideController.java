@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fastride.domain.ride.usecase.GetRideOutput;
-import com.fastride.domain.ride.usecase.GetRideUseCase;
-import com.fastride.domain.ride.usecase.RequestRideInput;
-import com.fastride.domain.ride.usecase.RequestRideUseCase;
+import com.fastride.application.ride.GetRideOutput;
+import com.fastride.application.ride.GetRideUseCase;
+import com.fastride.application.ride.RequestRideInput;
+import com.fastride.application.ride.RequestRideUseCase;
 
 import jakarta.validation.Valid;
 

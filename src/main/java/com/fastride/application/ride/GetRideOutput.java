@@ -1,4 +1,4 @@
-package com.fastride.domain.ride.usecase;
+package com.fastride.application.ride;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;

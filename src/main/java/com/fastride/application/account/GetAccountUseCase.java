@@ -1,8 +1,8 @@
-package com.fastride.domain.account.usecase;
+package com.fastride.application.account;
 
 import org.springframework.stereotype.Component;
 
-import com.fastride.domain.account.exception.AccountNotFoundException;
+import com.fastride.domain.account.AccountNotFoundException;
 import com.fastride.domain.account.model.Account;
 import com.fastride.domain.account.model.AccountRepository;
 import com.fastride.domain.shared.EntityId;

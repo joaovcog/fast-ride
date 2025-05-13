@@ -1,4 +1,4 @@
-package com.fastride.domain.account.usecase;
+package com.fastride.application.account;
 
 import org.springframework.stereotype.Component;
 
