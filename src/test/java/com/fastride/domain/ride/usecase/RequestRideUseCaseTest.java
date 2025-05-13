@@ -14,8 +14,6 @@ import com.fastride.domain.account.usecase.GetAccountOutput;
 import com.fastride.domain.account.usecase.GetAccountUseCase;
 import com.fastride.domain.account.usecase.SignUpInput;
 import com.fastride.domain.account.usecase.SignUpUseCase;
-import com.fastride.domain.ride.model.Position;
-import com.fastride.domain.ride.model.Ride;
 import com.fastride.domain.ride.model.RideStatus;
 import com.fastride.domain.shared.EntityId;
 import com.fastride.domain.shared.ValidationException;
@@ -51,15 +49,17 @@ class RequestRideUseCaseTest {
 		RequestRideInput requestRideInput = new RequestRideInput(createdAccount.accountId(), START_LAT_LONG,
 				START_LAT_LONG, DESTINATION_LAT_LONG, DESTINATION_LAT_LONG);
 		EntityId rideId = this.requestRideUseCase.execute(requestRideInput);
-		Ride ride = this.getRideUseCase.execute(rideId);
+		GetRideOutput ride = this.getRideUseCase.execute(rideId.toString());
 
 		assertNotNull(ride);
-		assertNotNull(ride.getRideId());
-		assertEquals(createdAccount.accountId(), ride.getPassenger().getAccountId().toString());
-		assertEquals(new Position(START_LAT_LONG, START_LAT_LONG), ride.getStart());
-		assertEquals(new Position(DESTINATION_LAT_LONG, DESTINATION_LAT_LONG), ride.getDestination());
-		assertNotNull(ride.getDate());
-		assertEquals(RideStatus.REQUESTED, ride.getStatus());
+		assertNotNull(ride.rideId());
+		assertEquals(createdAccount.accountId(), ride.passengerId());
+		assertEquals(START_LAT_LONG, ride.startLatitude());
+		assertEquals(START_LAT_LONG, ride.startLongitude());
+		assertEquals(DESTINATION_LAT_LONG, ride.destinationLatitude());
+		assertEquals(DESTINATION_LAT_LONG, ride.destinationLongitude());
+		assertNotNull(ride.date());
+		assertEquals(RideStatus.REQUESTED.name(), ride.status());
 	}
 
 	@Test

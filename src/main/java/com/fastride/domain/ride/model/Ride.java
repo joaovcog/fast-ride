@@ -4,14 +4,13 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-import com.fastride.domain.account.model.Account;
 import com.fastride.domain.shared.EntityId;
 
 public class Ride {
 
 	private EntityId rideId;
-	private Account passenger;
-	private Account driver;
+	private EntityId passengerId;
+	private EntityId driverId;
 	private BigDecimal fare;
 	private BigDecimal distance;
 	private Position start;
@@ -21,8 +20,10 @@ public class Ride {
 
 	private Ride(RideBuilder builder) {
 		this.rideId = new EntityId(builder.rideId);
-		this.passenger = builder.passenger;
-		this.driver = builder.driver;
+		this.passengerId = new EntityId(builder.passengerId);
+		if (builder.driverId != null) {
+			this.driverId = new EntityId(builder.driverId);
+		}
 		this.fare = builder.fare;
 		this.distance = builder.distance;
 		this.start = new Position(builder.startLatitude, builder.startLongitude);
@@ -35,12 +36,12 @@ public class Ride {
 		return rideId;
 	}
 
-	public Account getPassenger() {
-		return passenger;
+	public EntityId getPassengerId() {
+		return passengerId;
 	}
 
-	public Account getDriver() {
-		return driver;
+	public EntityId getDriverId() {
+		return driverId;
 	}
 
 	public BigDecimal getFare() {
@@ -87,8 +88,8 @@ public class Ride {
 	public static class RideBuilder {
 
 		private String rideId;
-		private Account passenger;
-		private Account driver;
+		private String passengerId;
+		private String driverId;
 		private BigDecimal fare;
 		private BigDecimal distance;
 		private BigDecimal startLatitude;
@@ -107,13 +108,13 @@ public class Ride {
 			return this;
 		}
 
-		public RideBuilder passenger(Account passenger) {
-			this.passenger = passenger;
+		public RideBuilder passengerId(String passengerId) {
+			this.passengerId = passengerId;
 			return this;
 		}
 
-		public RideBuilder driver(Account driver) {
-			this.driver = driver;
+		public RideBuilder driverId(String driverId) {
+			this.driverId = driverId;
 			return this;
 		}
 

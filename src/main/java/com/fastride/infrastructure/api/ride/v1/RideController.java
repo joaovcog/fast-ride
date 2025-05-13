@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fastride.domain.ride.model.Ride;
+import com.fastride.domain.ride.usecase.GetRideOutput;
 import com.fastride.domain.ride.usecase.GetRideUseCase;
 import com.fastride.domain.ride.usecase.RequestRideInput;
 import com.fastride.domain.ride.usecase.RequestRideUseCase;
-import com.fastride.domain.shared.EntityId;
 
 import jakarta.validation.Valid;
 
@@ -40,12 +39,8 @@ public class RideController {
 
 	@GetMapping("/{rideId}")
 	@ResponseStatus(HttpStatus.OK)
-	public RideOutputDto getRide(@PathVariable String rideId) {
-		Ride ride = this.getRideUseCase.execute(new EntityId(rideId));
-		return new RideOutputDto(ride.getRideId().toString(), ride.getPassenger().getAccountId().toString(),
-				ride.getPassenger().getName().getContent(), null, null, ride.getFare(), ride.getDistance(),
-				ride.getStart().latitude(), ride.getStart().longitude(), ride.getDestination().latitude(),
-				ride.getDestination().longitude(), ride.getStatus().name(), ride.getDate());
+	public GetRideOutput getRide(@PathVariable String rideId) {
+		return this.getRideUseCase.execute(rideId);
 	}
 
 }

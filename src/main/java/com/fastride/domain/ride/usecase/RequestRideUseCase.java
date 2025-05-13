@@ -33,7 +33,7 @@ public class RequestRideUseCase {
 		if (this.rideRepository.hasRequestedRideByAccountId(passengerId))
 			throw new ValidationException(
 					"A ride has already been requested for the passenger. You must complete or cancel the existing ride before requesting another one.");
-		Ride ride = RideBuilder.getInstance().request().passenger(account.get())
+		Ride ride = RideBuilder.getInstance().request().passengerId(account.get().getAccountId().toString())
 				.startLatitude(requestRideInput.startLatitude()).startLongitude(requestRideInput.startLongitude())
 				.destinationLatitude(requestRideInput.destinationLatitude())
 				.destinationLongitude(requestRideInput.destinationLongitude()).build();
