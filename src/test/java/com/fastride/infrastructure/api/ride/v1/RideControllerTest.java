@@ -80,7 +80,7 @@ class RideControllerTest {
 				// TODO: complete test assertion after refactoring RequestRideUseCase
 //				.andExpect(jsonPath("$.passengerName").value(createdAccount.getName().getContent()))
 				.andExpect(jsonPath("$.driverId").value((Object) null))
-				.andExpect(jsonPath("$.driverName").value((Object) null))
+//				.andExpect(jsonPath("$.driverName").value((Object) null))
 				.andExpect(jsonPath("$.fare").value((Object) null))
 				.andExpect(jsonPath("$.distance").value((Object) null))
 				.andExpect(jsonPath("$.startLatitude").value(requestRideInput.startLatitude()))

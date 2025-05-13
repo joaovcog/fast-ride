@@ -16,9 +16,14 @@ public class GetRideUseCase {
 		this.rideRepository = rideRepository;
 	}
 
-	public Ride execute(EntityId rideId) {
-		return this.rideRepository.findById(rideId).orElseThrow(
+	public GetRideOutput execute(String rideId) {
+		Ride ride = this.rideRepository.findById(new EntityId(rideId)).orElseThrow(
 				() -> new RideNotFoundException(String.format("Ride not found with the ID %s.", rideId.toString())));
+
+		return new GetRideOutput(ride.getRideId().toString(), ride.getPassenger().getAccountId().toString(), null,
+				ride.getFare(), ride.getDistance(), ride.getStart().latitude(), ride.getStart().longitude(),
+				ride.getDestination().latitude(), ride.getDestination().longitude(), ride.getStatus().name(),
+				ride.getDate());
 	}
 
 }
